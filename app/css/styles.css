@@ -66,8 +66,9 @@ body {
   padding: 0 20px 8px; flex-shrink: 0; position: relative; z-index: 5;
   font-size: 13px; font-weight: 700;
 }
-.tn-left, .tn-right { cursor: pointer; padding: 4px 0; }
+.tn-left, .tn-right { cursor: pointer; padding: 4px 0; display: flex; align-items: center; }
 .tn-left:active, .tn-right:active { opacity: 0.5; }
+.tn-left svg, .tn-right svg { display: block; }
 .tn-normal { background: var(--orange); color: rgba(255,255,255,0.85); }
 .tn-vip { background: transparent; color: rgba(252,211,77,0.7); }
 .tn-me { background: var(--orange); color: rgba(255,255,255,0.85); }
