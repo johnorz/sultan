@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopee Sultan Prototype — User Manual</title>
+<style>
+  :root {
+    --orange: #EE4D2D;
+    --gold: #FCD34D;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --sub: #64748b;
+    --border: #e2e8f0;
+    --code-bg: #f1f5f9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
+    color: #fff; padding: 60px 24px 48px; text-align: center;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 32px; font-weight: 900; }
+  .hero h1 span { background: linear-gradient(135deg, #FCD34D, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { margin: 0; color: #94a3b8; font-size: 15px; }
+  .hero .version { display: inline-block; background: rgba(252,211,77,0.15); color: var(--gold); padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 12px; }
+
+  /* Container */
+  .container { max-width: 780px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* TOC */
+  .toc {
+    background: var(--card); border-radius: 12px; padding: 24px; margin-bottom: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border);
+  }
+  .toc h2 { margin: 0 0 16px; font-size: 18px; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { margin-bottom: 6px; }
+  .toc a { color: var(--orange); text-decoration: none; font-weight: 600; font-size: 14px; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  .section { margin-bottom: 40px; }
+  .section h2 {
+    font-size: 22px; font-weight: 800; margin: 0 0 16px;
+    padding-bottom: 8px; border-bottom: 3px solid var(--orange);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section h3 { font-size: 16px; font-weight: 700; margin: 24px 0 8px; color: var(--text); }
+
+  /* Cards */
+  .info-card {
+    background: var(--card); border-radius: 12px; padding: 20px; margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid var(--border);
+  }
+  .info-card h4 { margin: 0 0 8px; font-size: 15px; font-weight: 700; }
+  .info-card p { margin: 0 0 8px; font-size: 14px; color: var(--sub); }
+  .info-card p:last-child { margin-bottom: 0; }
+
+  /* Tier table */
+  .tier-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+  .tier-table th { background: #1a1a2e; color: #fff; padding: 10px 8px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+  .tier-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .tier-table tr:last-child td { border-bottom: none; }
+  .tier-table .tier-name { font-weight: 700; }
+  .tier-silver { color: #A0AEC0; }
+  .tier-gold { color: #48BB78; }
+  .tier-platinum { color: #4299E1; }
+  .tier-diamond { color: #9F7AEA; }
+  .tier-sultan { color: #D69E2E; }
+
+  /* Segment table */
+  .seg-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0; }
+  .seg-table th { background: var(--orange); color: #fff; padding: 10px 8px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+  .seg-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); }
+
+  /* Steps */
+  .steps { counter-reset: step; padding: 0; list-style: none; }
+  .steps li {
+    position: relative; padding: 12px 0 12px 48px; font-size: 14px;
+    border-left: 2px solid var(--border); margin-left: 16px;
+  }
+  .steps li:last-child { border-left-color: transparent; }
+  .steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute; left: -14px; top: 10px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--orange); color: #fff;
+    font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .steps li strong { color: var(--text); }
+
+  /* Keyboard shortcuts */
+  kbd {
+    display: inline-block; padding: 2px 8px; font-size: 12px;
+    background: var(--code-bg); border: 1px solid #cbd5e1; border-radius: 4px;
+    font-family: monospace; font-weight: 700; color: var(--text);
+    box-shadow: 0 1px 0 #cbd5e1;
+  }
+
+  /* Callout */
+  .callout {
+    background: #fff7ed; border-left: 4px solid var(--orange); padding: 14px 16px;
+    border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px;
+  }
+  .callout strong { color: var(--orange); }
+  .callout-blue {
+    background: #eff6ff; border-left-color: #3b82f6;
+  }
+  .callout-blue strong { color: #2563eb; }
+  .callout-green {
+    background: #f0fdf4; border-left-color: #22c55e;
+  }
+  .callout-green strong { color: #16a34a; }
+
+  /* Code */
+  code {
+    background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
+    font-size: 13px; font-family: 'SF Mono', Consolas, monospace;
+  }
+
+  /* Back link */
+  .back-link {
+    display: inline-block; margin-bottom: 24px; color: var(--orange);
+    text-decoration: none; font-weight: 700; font-size: 14px;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  /* Footer */
+  .footer {
+    text-align: center; padding: 32px 20px; color: #94a3b8; font-size: 12px;
+    border-top: 1px solid var(--border); margin-top: 40px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 32px; }
+    .hero h1 { font-size: 24px; }
+    .container { padding: 20px 16px 60px; }
+    .tier-table, .seg-table { font-size: 11px; }
+    .tier-table th, .tier-table td, .seg-table th, .seg-table td { padding: 8px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🧧 <span>Shopee Sultan</span> Prototype</h1>
+  <p>Interactive demo for the red packet gifting feature</p>
+  <div class="version">User Manual v1.0</div>
+</div>
+
+<div class="container">
+
+<a href="index.html" class="back-link">← Back to Prototype</a>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#sender-flow">Sender Flow</a></li>
+    <li><a href="#receiver-flow">Receiver Flow</a></li>
+    <li><a href="#tiers">Tier System</a></li>
+    <li><a href="#rewards">Reward Economics</a></li>
+    <li><a href="#debug">Debug Panel</a></li>
+    <li><a href="#resources">Companion Resources</a></li>
+    <li><a href="#file-structure">File Structure</a></li>
+  </ol>
+</div>
+
+<!-- 1. OVERVIEW -->
+<div class="section" id="overview">
+  <h2>1. Overview</h2>
+  <p>The Shopee Sultan prototype demonstrates a <strong>red packet (angbao) gifting</strong> feature where users can send monetary gifts to friends, family, or nearby strangers. It models:</p>
+  <div class="info-card">
+    <h4>Sender Experience</h4>
+    <p>Swipe-to-send gesture, share sheet with social channels, face-to-face nearby gifting (Phone Bump, Mass Airdrop), and milestone-based sender rewards.</p>
+  </div>
+  <div class="info-card">
+    <h4>Receiver Experience</h4>
+    <p>Tap-to-open red packet with a 3-phase cinematic animation (grow → shake → burst), segment-based reward amounts, and bonus coins from high-tier senders.</p>
+  </div>
+  <div class="info-card">
+    <h4>Tier-Driven UI</h4>
+    <p>5 distinct tiers (Silver → Sultan) each with unique visual themes, packet designs, budgets, perks, and reward multipliers. Normal tiers get the standard orange UI; VIP tiers get a premium dark-gold theme.</p>
+  </div>
+</div>
+
+<!-- 2. GETTING STARTED -->
+<div class="section" id="getting-started">
+  <h2>2. Getting Started</h2>
+
+  <h3>Opening the Prototype</h3>
+  <p>Open <code>index.html</code> in any modern browser (Chrome, Safari, Firefox, Edge). The prototype renders as a phone-sized frame centered on screen. It works on both desktop and mobile devices.</p>
+
+  <div class="callout">
+    <strong>Tip:</strong> On desktop, the phone frame auto-scales to fit your browser window. Resize the window to see it adapt.
+  </div>
+
+  <h3>First Things First</h3>
+  <ol class="steps">
+    <li>The prototype loads in <strong>Sender</strong> role at <strong>Sultan</strong> tier by default — the richest experience with all features unlocked.</li>
+    <li>Press <kbd>D</kbd> on your keyboard (or tap the ⚙️ gear icon) to open the <strong>Debug Panel</strong> and switch tiers/roles.</li>
+    <li>Try swiping the red packet upward to trigger the send flow, or switch to Receiver to see the open animation.</li>
+  </ol>
+</div>
+
+<!-- 3. SENDER FLOW -->
+<div class="section" id="sender-flow">
+  <h2>3. Sender Flow</h2>
+
+  <h3>Dashboard</h3>
+  <p>The sender sees their treat balance, number of packets remaining, current tier badge, and a leaderboard (Diamond & Sultan tiers only). There are two dashboard variants:</p>
+  <ul>
+    <li><strong>Normal dashboard</strong> (Silver, Gold) — Orange/green theme, simple layout</li>
+    <li><strong>VIP dashboard</strong> (Platinum, Diamond, Sultan) — Dark theme with gold accents, extra stats (people gifted, leaderboard rank)</li>
+  </ul>
+
+  <h3>Sending a Packet</h3>
+  <ol class="steps">
+    <li><strong>Swipe the red packet upward</strong> (or click and drag on desktop). A successful swipe needs ~80px of upward movement. If the swipe is too short, you'll see "Swipe up harder!"</li>
+    <li>The packet flies out and the <strong>Share Sheet</strong> opens, showing two sections:
+      <br><strong>Nearby:</strong> Phone Bump (NFC-style) and Mass Airdrop (radar broadcast)
+      <br><strong>Share via App:</strong> WhatsApp, Telegram, X, Instagram</li>
+    <li><strong>Tap a social channel</strong> to send. The packet animates (jumps to center → enlarges → particle burst → flies out), then returns you to the dashboard with a milestone progress toast.</li>
+    <li><strong>Phone Bump:</strong> Opens a holding-phones-together animation screen. Tap "Simulate Bump" to demo the NFC transfer.</li>
+    <li><strong>Mass Airdrop:</strong> Opens a radar screen where you choose how many nearby people to gift (slider). Tap "Start Airdrop" to see the broadcasting animation followed by a settlement screen showing how many accepted.</li>
+  </ol>
+
+  <div class="callout-blue callout">
+    <strong>Note:</strong> The share overlay also has a "Cancel" button at the bottom to close it and return to the dashboard. You can also tap "‹ Back" in the top navigation bar.
+  </div>
+
+  <h3>Navigation</h3>
+  <p>The bottom tab bar switches between <strong>Send</strong> (gift dashboard) and <strong>Me</strong> (profile/earnings). The top bar has a Back button (‹) and Share button (›).</p>
+</div>
+
+<!-- 4. RECEIVER FLOW -->
+<div class="section" id="receiver-flow">
+  <h2>4. Receiver Flow</h2>
+  <p>Switch to the Receiver role via the Debug Panel to see what recipients experience.</p>
+
+  <h3>Locked Packet Screen</h3>
+  <p>The receiver sees a large red packet with the sender's tier seal, a "From: Sultan Ahmad" label, and a "Tap to open" hint. VIP-tier packets show floating particles in the background.</p>
+
+  <h3>3-Phase Open Animation</h3>
+  <p>Tapping the packet triggers a cinematic sequence:</p>
+  <ol class="steps">
+    <li><strong>Phase 1 — Grow</strong> (0–0.7s): The packet scales up with a bouncy overshoot, building anticipation.</li>
+    <li><strong>Phase 2 — Shake</strong> (0.7–1.5s): The packet vibrates rapidly at maximum size with a glowing pulse behind it, as if reaching critical mass.</li>
+    <li><strong>Phase 3 — Burst</strong> (1.5s): The packet explodes outward with a brightness flash and 18 colorful particles radiate from the center.</li>
+    <li><strong>Reveal</strong> (1.8s): The result overlay fades in showing the reward badge, amount, bonus coins, sender info, and action buttons (Withdraw / Done).</li>
+  </ol>
+
+  <div class="callout-green callout">
+    <strong>Try it:</strong> Switch segments in the Debug Panel to see different reward amounts and badge types for each receiver segment.
+  </div>
+</div>
+
+<!-- 5. TIERS -->
+<div class="section" id="tiers">
+  <h2>5. Tier System</h2>
+  <p>There are 5 tiers, each with progressively richer visuals, bigger budgets, and more features. Tiers are determined by a composite score (VIP status 40%, Monthly Spend 35%, Activity 15%, Social 10%).</p>
+
+  <div class="info-card" style="overflow-x: auto;">
+    <table class="tier-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Score</th>
+          <th>Budget</th>
+          <th>Packets</th>
+          <th>Seal</th>
+          <th>Multiplier</th>
+          <th>Key Perks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tier-name tier-silver">🥈 Silver</td>
+          <td>0–19</td>
+          <td>Rp 50K</td>
+          <td>5</td>
+          <td>S</td>
+          <td>0.5×</td>
+          <td>Link sharing only</td>
+        </tr>
+        <tr>
+          <td class="tier-name tier-gold">🥇 Gold</td>
+          <td>20–39</td>
+          <td>Rp 200K</td>
+          <td>15</td>
+          <td>🌿</td>
+          <td>0.8×</td>
+          <td>+ QR code</td>
+        </tr>
+        <tr>
+          <td class="tier-name tier-platinum">💎 Platinum</td>
+          <td>40–59</td>
+          <td>Rp 750K</td>
+          <td>30</td>
+          <td>❄️</td>
+          <td>1.0×</td>
+          <td>+ F2F, Radar, 5% bonus coins</td>
+        </tr>
+        <tr>
+          <td class="tier-name tier-diamond">💠 Diamond</td>
+          <td>60–79</td>
+          <td>Rp 2M</td>
+          <td>50</td>
+          <td>💎</td>
+          <td>1.2×</td>
+          <td>+ Leaderboard, 10% bonus coins</td>
+        </tr>
+        <tr>
+          <td class="tier-name tier-sultan">👑 Sultan</td>
+          <td>80–100</td>
+          <td>Rp 5M</td>
+          <td>100</td>
+          <td>👑</td>
+          <td>1.5×</td>
+          <td>+ Make it Rain, VIP badge, 20% bonus coins</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Visual Differences</h3>
+  <ul>
+    <li><strong>Silver/Gold</strong> — Standard orange Shopee header, simple packet envelope, no leaderboard</li>
+    <li><strong>Platinum/Diamond/Sultan</strong> — Dark VIP theme with gold accents, glowing background, stat cards (Packets Left, People Gifted, Leaderboard Rank), premium packet styles</li>
+  </ul>
+</div>
+
+<!-- 6. REWARDS -->
+<div class="section" id="rewards">
+  <h2>6. Reward Economics</h2>
+  <p>The prototype models two reward streams based on <code>reward_config.json</code>:</p>
+
+  <h3>A. Receiver Rewards (Segment-Based)</h3>
+  <p>When a receiver opens a packet, the reward depends on which user segment they belong to:</p>
+
+  <div class="info-card" style="overflow-x: auto;">
+    <table class="seg-table">
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th>Mix %</th>
+          <th>Reward</th>
+          <th>Freq Cap</th>
+          <th>Badge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>🧧 Existing MAU</strong></td>
+          <td>60%</td>
+          <td>Rp 200</td>
+          <td>10×</td>
+          <td>Friend's Treat</td>
+        </tr>
+        <tr>
+          <td><strong>🎉 New Active</strong> (light resurrection)</td>
+          <td>25%</td>
+          <td>Rp 2,000</td>
+          <td>1×</td>
+          <td>Welcome Back Gift</td>
+        </tr>
+        <tr>
+          <td><strong>🎉 Re-Activated</strong> (deep dormant)</td>
+          <td>10%</td>
+          <td>Rp 10,000</td>
+          <td>1×</td>
+          <td>Welcome Back Gift</td>
+        </tr>
+        <tr>
+          <td><strong>🎁 New User</strong></td>
+          <td>5%</td>
+          <td>Rp 15,000</td>
+          <td>1×</td>
+          <td>New User Bonus</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Additionally, VIP-tier senders add <strong>bonus coins</strong> on top: Platinum 5%, Diamond 10%, Sultan 20% of the reward amount.</p>
+
+  <h3>B. Sender Rewards (Milestone Cumulative)</h3>
+  <p>Senders earn escalating rewards at every 3 successful referrals:</p>
+  <ul>
+    <li><strong>Milestone 1</strong> (3 sends): Rp 2,000 base</li>
+    <li><strong>Milestone 2</strong> (6 sends): Rp 4,000 base</li>
+    <li><strong>Milestone 3</strong> (9 sends): Rp 6,000 base</li>
+    <li>...and so on (+Rp 2,000 per milestone)</li>
+  </ul>
+  <p>Each milestone reward is multiplied by the sender's <strong>tier multiplier</strong> (e.g., Sultan 1.5× turns Rp 2,000 into Rp 3,000).</p>
+
+  <div class="callout">
+    <strong>Example:</strong> A Sultan-tier sender who has sent 9 packets earns: Milestone 1 (Rp 3,000) + Milestone 2 (Rp 6,000) + Milestone 3 (Rp 9,000) = Rp 18,000 total sender rewards.
+  </div>
+</div>
+
+<!-- 7. DEBUG PANEL -->
+<div class="section" id="debug">
+  <h2>7. Debug Panel</h2>
+  <p>The Debug Panel is the control center for navigating the prototype. Open it by pressing <kbd>D</kbd> or tapping the ⚙️ icon in the bottom-right corner.</p>
+
+  <h3>Controls</h3>
+  <div class="info-card">
+    <h4>Role</h4>
+    <p><strong>📤 Sender</strong> — Shows the sender dashboard (Normal or VIP depending on tier)</p>
+    <p><strong>📥 Receiver</strong> — Shows the locked red packet ready to be tapped open</p>
+  </div>
+  <div class="info-card">
+    <h4>Tier</h4>
+    <p>Switch between all 5 tiers instantly. The entire UI updates: colors, packet design, budget, perks, leaderboard visibility, VIP vs normal layout.</p>
+  </div>
+  <div class="info-card">
+    <h4>Receiver Segment</h4>
+    <p>Manually force a specific receiver segment to see its reward amount and badge. The four options are: 🧧 MAU, 🔄 Resurrected, 💤 Dormant, 🆕 New User.</p>
+  </div>
+  <div class="info-card">
+    <h4>Sender Milestone</h4>
+    <p>Shows current send count and distance to next milestone. Use <strong>📤 +1 Send</strong> to simulate sends and trigger milestone toasts. Use <strong>🔄 Reset</strong> to reset the counter.</p>
+  </div>
+  <div class="info-card">
+    <h4>💰 Economics</h4>
+    <p>Real-time budget breakdown calculated from <code>reward_config.json</code> parameters: total senders/receivers, blended receiver cost, sender milestone cost, tier multiplier, receiver cost, sender cost, fixed ops, total budget, and per-receiver USD cost.</p>
+  </div>
+  <div class="info-card">
+    <h4>📎 Resources</h4>
+    <p>Quick links to open the <strong>Budget Simulator</strong> (Sultan Pro v6 interactive calculator) and <strong>User Guide</strong> (PDF) in new tabs.</p>
+  </div>
+</div>
+
+<!-- 8. RESOURCES -->
+<div class="section" id="resources">
+  <h2>8. Companion Resources</h2>
+
+  <div class="info-card">
+    <h4>📊 Budget Simulator (simulator.html)</h4>
+    <p>Sultan Pro v6 — a standalone interactive calculator for modeling campaign economics. Adjust sender volume, referral rates, receiver segment mix, frequency, rewards, and milestone parameters. Shows live KPIs: CPIMAU, CPIB, CAC, incremental MAU, and budget breakdown with color-coded thresholds.</p>
+    <p><a href="simulator.html" target="_blank" style="color:var(--orange); font-weight:700;">Open Budget Simulator →</a></p>
+  </div>
+  <div class="info-card">
+    <h4>📄 User Guide (user_guide.pdf)</h4>
+    <p>Product strategy document covering the full Sultan feature design, tier system rationale, and business objectives.</p>
+    <p><a href="user_guide.pdf" target="_blank" style="color:var(--orange); font-weight:700;">Open User Guide PDF →</a></p>
+  </div>
+  <div class="info-card">
+    <h4>📋 Reward Config (reward_config.json)</h4>
+    <p>Source-of-truth JSON file for all reward economics: receiver segments, sender incentives, tier multipliers, traffic assumptions, and operational costs. The prototype reads these values into its config.</p>
+  </div>
+</div>
+
+<!-- 9. FILE STRUCTURE -->
+<div class="section" id="file-structure">
+  <h2>9. File Structure</h2>
+  <div class="info-card">
+    <pre style="margin:0; font-size:13px; line-height:1.8; overflow-x:auto;">
+sultan/
+├── app/
+│   ├── index.html          ← Main prototype (phone frame)
+│   ├── user_manual.html    ← This manual
+│   ├── simulator.html      ← Budget simulator (Sultan Pro v6)
+│   ├── user_guide.pdf      ← Product strategy PDF
+│   ├── css/
+│   │   └── styles.css      ← All styling (animations, themes, debug panel)
+│   └── js/
+│       ├── config.js       ← Tier definitions, rewards, economics, strings
+│       └── app.js          ← Application logic, interactions, debug functions
+├── reward_config.json      ← Source-of-truth reward economics
+└── index.html              ← Root redirect → app/index.html
+    </pre>
+  </div>
+</div>
+
+<div class="footer">
+  Shopee Sultan Prototype · Built for internal demo purposes
+</div>
+
+</div>
+</body>
+</html>
