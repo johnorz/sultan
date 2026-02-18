@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "version": "6.0",
+    "description": "Configuration for Sultan Pro Prototype (Global Calibrated Defaults)",
+    "currency": "IDR",
+    "usd_exchange_rate": 16000
+  },
+  "traffic_assumptions": {
+    "total_senders": 1000000,
+    "avg_referrals_per_sender": 3.0,
+    "mau_cannibalization_decay_rate": 0.15
+  },
+  "receiver_segments": [
+    {
+      "id": "existing_active",
+      "name": "Existing MAU",
+      "population_mix_percent": 0.60,
+      "reward_amount": 200,
+      "frequency_cap": 10,
+      "conversion_rate_percent": 0.05,
+      "is_incremental": false
+    },
+    {
+      "id": "new_active",
+      "name": "New Active (Light Resurrection)",
+      "population_mix_percent": 0.25,
+      "reward_amount": 2000,
+      "frequency_cap": 1,
+      "conversion_rate_percent": 0.08,
+      "is_incremental": true
+    },
+    {
+      "id": "ra",
+      "name": "Re-Activated (Deep Dormant)",
+      "population_mix_percent": 0.10,
+      "reward_amount": 10000,
+      "frequency_cap": 1,
+      "conversion_rate_percent": 0.15,
+      "is_incremental": true
+    },
+    {
+      "id": "new_user",
+      "name": "Pure New User",
+      "population_mix_percent": 0.05,
+      "reward_amount": 15000,
+      "frequency_cap": 1,
+      "conversion_rate_percent": 0.20,
+      "is_incremental": true
+    }
+  ],
+  "sender_incentives": {
+    "type": "milestone_cumulative",
+    "milestone_step_users": 3,
+    "base_reward": 2000,
+    "increment_reward": 2000,
+    "apply_tier_multiplier": true
+  },
+  "operational_costs": {
+    "fixed_ops_cost": 200000000,
+    "description": "Includes Leaderboard Prizes (iPhones/Gold) and Marketing Buzz seeding"
+  },
+  "tier_multipliers": {
+    "description": "Weighted average calculation based on traffic volume share",
+    "tiers": [
+      { "name": "T1 (Sultan)", "population_percent": 0.05, "multiplier": 1.5, "traffic_share_percent": 0.32 },
+      { "name": "T2 (Top)", "population_percent": 0.10, "multiplier": 1.2, "traffic_share_percent": 0.23 },
+      { "name": "T3 (Mid)", "population_percent": 0.15, "multiplier": 1.0, "traffic_share_percent": 0.20 },
+      { "name": "T4 (Low)", "population_percent": 0.20, "multiplier": 0.8, "traffic_share_percent": 0.15 },
+      { "name": "T5 (Bottom)", "population_percent": 0.50, "multiplier": 0.5, "traffic_share_percent": 0.10 }
+    ],
+    "calculated_weighted_average": 1.13
+  }
+}

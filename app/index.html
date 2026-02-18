@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Shopee Sultan — Interactive Prototype</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=3">
+</head>
+<body>
+
+<div class="phone-frame-wrapper" id="phoneFrameWrapper">
+<div class="phone-frame" id="phoneFrame">
+
+  <!-- ===== SCREEN: SENDER DASHBOARD (NORMAL — Silver/Gold) ===== -->
+  <div class="screen sender-screen sender-normal active" id="screen-sender-normal">
+    <div class="status-bar sb-normal"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="top-nav tn-normal">
+      <div class="tn-left" onclick="navigateBack()">‹ Back</div>
+      <div class="tn-right" onclick="openShareSheet()">Share ›</div>
+    </div>
+    <div class="scrollable-content">
+      <div class="sender-header sh-normal">
+        <span class="sh-icon" id="sender-mascot">🎁</span>
+        <h2 class="sh-title" id="sender-title">🧧 Shopee Traktir</h2>
+        <div class="sh-tagline" id="sender-tagline">Spread joy to your friends!</div>
+      </div>
+      <div class="balance-card bc-normal">
+        <div class="bal-label">Your Treat Balance</div>
+        <div class="bal-amount"><span>Rp</span> <span id="sender-balance">200,000</span></div>
+        <div class="packets-left" id="sender-packets">15 packets remaining</div>
+        <div class="tier-badge-inline" id="sender-tier-badge">
+          <span id="sender-tier-dot" class="tier-dot"></span>
+          <span id="sender-tier-text">Gold Member</span>
+        </div>
+      </div>
+      <div class="packet-send-area psa-normal" id="sendAreaNormal">
+        <div id="packetWrapperNormal" class="tier-gold">
+          <div class="packet-envelope" id="packetNormal">
+            <div class="packet-seal" id="sealNormal">🌿</div>
+          </div>
+        </div>
+        <div class="swipe-arrow hint-orange">↑</div>
+        <div class="packet-send-hint hint-orange" id="sendHintNormal">Swipe packet up to send!</div>
+        <div class="packet-send-sub" id="sendSubNormal">Each packet: Rp 13,333</div>
+      </div>
+      <div class="leaderboard-section lb-normal" id="leaderboard-normal">
+        <div class="lb-title">🏆 Leaderboard</div>
+        <div class="lb-list" id="lb-list-normal"></div>
+      </div>
+    </div>
+    <div class="bottom-nav bn-normal" id="bottom-nav-normal">
+      <div class="nav-item active" data-tab="send" onclick="switchTab('send')"><span class="nav-icon">🎁</span>Send</div>
+      <div class="nav-item" data-tab="me" onclick="switchTab('me')"><span class="nav-icon">👤</span>Me</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: SENDER DASHBOARD (VIP — Platinum/Diamond/Sultan) ===== -->
+  <div class="screen sender-screen sender-vip hidden" id="screen-sender-vip">
+    <!-- VIP glow background — contained inside a non-overflow div -->
+    <div class="vip-glow"></div>
+    <div class="status-bar sb-vip"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="top-nav tn-vip">
+      <div class="tn-left" onclick="navigateBack()">‹ Back</div>
+      <div class="tn-right" onclick="openShareSheet()">Share ›</div>
+    </div>
+    <div class="scrollable-content">
+      <div class="sender-header sh-vip">
+        <span class="sh-icon" id="vip-crown">👑</span>
+        <h2 class="sh-title sh-title-vip" id="vip-title">Sultan Platinum Privilege</h2>
+        <div class="sh-tagline sh-tagline-vip" id="vip-tier-label">Score 92/100 · Season 12</div>
+      </div>
+      <div class="balance-card bc-vip">
+        <div class="bal-label" id="vip-bal-label">Sultan Treasury</div>
+        <div class="bal-amount"><span>Rp</span> <span id="vip-balance">5,000,000</span></div>
+        <div class="packets-info">
+          <div class="stat"><div class="stat-val" id="vip-packets-val">100</div><div class="stat-label">Packets Left</div></div>
+          <div class="stat"><div class="stat-val" id="vip-gifted-val">127</div><div class="stat-label">People Gifted</div></div>
+          <div class="stat"><div class="stat-val" id="vip-rank-val">#3</div><div class="stat-label">Leaderboard</div></div>
+        </div>
+      </div>
+      <div class="packet-send-area psa-vip" id="sendAreaVip">
+        <div id="packetWrapperVip" class="tier-sultan">
+          <div class="packet-envelope" id="packetVip">
+            <div class="packet-seal" id="sealVip">👑</div>
+          </div>
+        </div>
+        <div class="swipe-arrow hint-gold">↑</div>
+        <div class="packet-send-hint hint-gold" id="sendHintVip">Swipe Up to Make it Rain</div>
+        <div class="packet-send-sub" style="color:#555">Broadcast to nearby friends</div>
+        <div class="micro-copy-vip"><strong id="vip-micro-packets">100 packets</strong> left · <span id="vip-micro-each">Rp 50,000 each</span></div>
+      </div>
+      <div class="leaderboard-section lb-vip" id="leaderboard-vip">
+        <div class="lb-title lb-title-gold">🏆 Leaderboard</div>
+        <div class="lb-list" id="lb-list-vip"></div>
+      </div>
+    </div>
+    <div class="bottom-nav bn-vip" id="bottom-nav-vip">
+      <div class="nav-item active" data-tab="send" onclick="switchTab('send')"><span class="nav-icon">🎁</span>Send</div>
+      <div class="nav-item" data-tab="me" onclick="switchTab('me')"><span class="nav-icon">👤</span>Me</div>
+    </div>
+  </div>
+
+  <!-- ===== SHARE OVERLAY (FADE IN/OUT — sits on top) ===== -->
+  <div class="share-overlay" id="shareOverlay">
+    <div class="send-particles" id="sendParticles"></div>
+    <div class="share-overlay-inner" id="shareOverlayInner">
+      <div class="share-packet-top" id="sharePacketTop">
+        <div class="share-packet-mini" id="sharePacketMini"></div>
+        <div class="share-packet-label" id="sharePacketLabel">Ready to send</div>
+      </div>
+      <div class="share-body">
+        <div class="sheet-title" id="shareTitle">Send your gift</div>
+        <div class="channel-section-title">Nearby</div>
+        <div class="f2f-grid" id="f2fGrid"></div>
+        <div class="channel-section-title" style="margin-top:16px">Share via App</div>
+        <div class="channel-grid" id="channelGrid"></div>
+        <div class="share-cancel-btn" onclick="closeShareSheet()">Cancel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: ME TAB ===== -->
+  <div class="screen screen-me hidden" id="screen-me">
+    <div class="status-bar sb-me"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="top-nav tn-me">
+      <div class="tn-left" onclick="navigateBack()">‹ Back</div>
+      <div class="tn-right"></div>
+    </div>
+    <div class="scrollable-content me-content">
+      <div class="me-header">
+        <div class="me-avatar" id="me-avatar">👤</div>
+        <div class="me-name">Your Profile</div>
+        <div class="me-tier-badge" id="me-tier-badge">Sultan Platinum</div>
+      </div>
+      <div class="me-total-card" id="me-total-card">
+        <div class="me-total-label">Total Earnings</div>
+        <div class="me-total-amount" id="me-total-amount">Rp 3,645,000</div>
+      </div>
+      <div class="me-card">
+        <div class="me-card-header">
+          <span class="me-card-icon">🎁</span>
+          <span class="me-card-title">Send Earnings</span>
+        </div>
+        <div class="me-card-amount" id="me-send-earnings">Rp 145,000</div>
+        <div class="me-card-detail"><span id="me-total-sent">87</span> packets sent</div>
+        <div class="me-card-explainer">
+          <div class="me-explainer-row"><span>Every 3 successful sends</span><strong>+ Rp 5,000</strong></div>
+          <div class="me-explainer-row me-explainer-bonus"><span>New user bonus (first 10 sends)</span><strong>2x reward</strong></div>
+        </div>
+      </div>
+      <div class="me-card">
+        <div class="me-card-header">
+          <span class="me-card-icon">💰</span>
+          <span class="me-card-title">Received from Others</span>
+        </div>
+        <div class="me-card-amount" id="me-received">Rp 3,500,000</div>
+        <div class="me-card-detail" id="me-received-detail">From gifts, airdrops & bonuses</div>
+      </div>
+      <div class="me-activity">
+        <div class="me-activity-title">Recent Activity</div>
+        <div class="me-activity-item"><span>🎁</span><div><strong>Sent 3 packets</strong><br><small>Earned Rp 5,000</small></div><span class="me-time">2h ago</span></div>
+        <div class="me-activity-item"><span>💰</span><div><strong>Received from Sultan Ahmad</strong><br><small>Rp 50,000 + 10 bonus coins</small></div><span class="me-time">5h ago</span></div>
+        <div class="me-activity-item"><span>🎁</span><div><strong>Sent 3 packets</strong><br><small>Earned Rp 5,000 (new user 2x = Rp 10,000)</small></div><span class="me-time">1d ago</span></div>
+      </div>
+    </div>
+    <div class="bottom-nav bn-me" id="bottom-nav-me">
+      <div class="nav-item" data-tab="send" onclick="switchTab('send')"><span class="nav-icon">🎁</span>Send</div>
+      <div class="nav-item active" data-tab="me" onclick="switchTab('me')"><span class="nav-icon">👤</span>Me</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: PHONE BUMP ===== -->
+  <div class="screen screen-phone-bump hidden" id="screen-phone-bump">
+    <div class="status-bar" style="color:#fff"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="bump-content">
+      <div class="bump-illustration">
+        <div class="bump-phone bump-phone-left">📱</div>
+        <div class="bump-pulse"></div>
+        <div class="bump-phone bump-phone-right">📱</div>
+      </div>
+      <div class="bump-title">Phone Bump</div>
+      <div class="bump-subtitle">Hold your phones close together to send the gift</div>
+      <div class="bump-steps">
+        <div class="bump-step"><span>1</span> Open Shopee on both phones</div>
+        <div class="bump-step"><span>2</span> Hold phones back-to-back</div>
+        <div class="bump-step"><span>3</span> Wait for the magic ✨</div>
+      </div>
+      <button class="bump-simulate-btn" onclick="simulateBump()">✨ Simulate Bump</button>
+      <div class="back-btn" onclick="navigateBack()" style="color:#888">← Back</div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: RADAR / MASS AIRDROP CONFIG ===== -->
+  <div class="screen screen-radar hidden" id="screen-radar">
+    <div class="rc-header">
+      <h3>📡 Mass Airdrop</h3>
+      <p>Choose how many people to gift nearby</p>
+    </div>
+    <div class="radar-visual">
+      <div class="rv-ring r1"></div>
+      <div class="rv-ring r2"></div>
+      <div class="rv-ring r3"></div>
+      <div class="rv-center" id="radar-center-icon">👑</div>
+      <div class="rv-dot" style="top:15px;right:20px;">👤</div>
+      <div class="rv-dot" style="bottom:25px;left:10px;">👤</div>
+      <div class="rv-dot" style="top:50px;left:5px;">👤</div>
+      <div class="rv-dot" style="bottom:8px;right:25px;">👤</div>
+      <div class="rv-dot" style="top:8px;left:50px;">👤</div>
+    </div>
+    <div class="rc-detected">5 people detected nearby</div>
+    <div class="rc-detected-sub">within 10m radius</div>
+    <div class="rc-slider-section">
+      <div class="rc-slider-label"><span>Recipients</span><strong id="radar-count">3 of 5</strong></div>
+      <input type="range" class="rc-slider-input" id="radarSlider" min="1" max="5" value="3">
+    </div>
+    <div class="rc-cost">
+      <div class="cost-label">Maximum Budget Reserved</div>
+      <div class="cost-amount" id="radar-cost">Rp 150,000</div>
+      <div class="cost-note">✓ Only deducted when recipients accept</div>
+    </div>
+    <button class="broadcast-btn" onclick="startBroadcast()">📡 Start Airdrop</button>
+    <div class="back-btn" onclick="navigateBack()" style="color:#888">← Back</div>
+  </div>
+
+  <!-- ===== SCREEN: BROADCASTING ===== -->
+  <div class="screen screen-broadcasting hidden" id="screen-broadcasting">
+    <div class="radar-ring-anim"></div>
+    <div class="radar-ring-anim"></div>
+    <div class="radar-ring-anim"></div>
+    <div class="flying-packet fp-anim-1"><div class="mini-seal">👑</div></div>
+    <div class="flying-packet fp-anim-2"><div class="mini-seal">👑</div></div>
+    <div class="flying-packet fp-anim-3"><div class="mini-seal">👑</div></div>
+    <div class="broadcast-icon">📡</div>
+    <div class="broadcast-text">Airdropping... 💸</div>
+  </div>
+
+  <!-- ===== SCREEN: SETTLEMENT ===== -->
+  <div class="screen screen-settlement hidden" id="screen-settlement">
+    <div class="settlement-check">✅</div>
+    <div class="settlement-text" id="settlement-text">2 of 3 accepted!</div>
+    <div class="settlement-sub" id="settlement-sub">Rp 100,000 charged · Rp 50,000 returned</div>
+    <button class="settlement-done-btn" onclick="resetToHome()">Back to Dashboard</button>
+  </div>
+
+  <!-- ===== SCREEN: RECEIVER (locked + in-place open result) ===== -->
+  <div class="screen screen-recv-locked hidden" id="screen-recv-locked">
+    <div class="particles" id="recv-particles">
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+    </div>
+    <div class="recv-packet-display" id="recv-tap-area">
+      <div class="recv-packet-big" id="recv-packet-big">
+        <div class="recv-seal-big" id="recv-seal-big">👑</div>
+      </div>
+      <div class="recv-extra-tag" id="recv-extra-tag">✨ Contains Extra Coins</div>
+      <div class="recv-from" id="recv-from">👑 From: Sultan Ahmad</div>
+      <div class="recv-tier-badge" id="recv-tier-badge">Sultan Platinum</div>
+      <div class="recv-tap-hint" id="recv-tap-hint">Tap to open Sultan's gift</div>
+    </div>
+    <!-- Burst particles on open -->
+    <div class="recv-burst-particles" id="recvBurstParticles"></div>
+    <!-- Result revealed in-place (no page navigation) -->
+    <div class="recv-result-overlay" id="recvResultOverlay">
+      <div class="confetti-container">
+        <div class="confetti">🪙</div><div class="confetti">✨</div>
+        <div class="confetti">🪙</div><div class="confetti">⭐</div>
+        <div class="confetti">🪙</div><div class="confetti">✨</div>
+        <div class="confetti">🪙</div><div class="confetti">⭐</div>
+      </div>
+      <div class="recv-light-burst"></div>
+      <div class="recv-result-content">
+        <div class="jackpot-badge" id="jackpot-badge">🎉 Welcome Back Gift</div>
+        <div class="jackpot-amount"><span>Rp</span> <span id="jackpot-amount">50,000</span></div>
+        <div class="jackpot-label" id="jackpot-bonus">+ 10 Bonus Coins from Sultan</div>
+        <div class="jackpot-source" id="jackpot-source">👑 Sultan Ahmad · Tier: Sultan Platinum</div>
+        <button class="withdraw-btn" onclick="showToast('Withdrawn to ShopeePay!')">💰 Withdraw to Wallet</button>
+        <button class="recv-done-btn" onclick="resetToHome()">Done</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end phone-frame-wrapper -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Debug Panel -->
+<div class="debug-toggle" id="debugToggle" title="Press D">⚙️</div>
+<div class="debug-panel" id="debugPanel">
+  <h4>⚙️ Debug Controls</h4>
+  <div class="debug-section">
+    <label>Role</label>
+    <div class="debug-role-btns">
+      <div class="debug-role-btn active" data-role="sender" onclick="setRole('sender')">📤 Sender</div>
+      <div class="debug-role-btn" data-role="receiver" onclick="setRole('receiver')">📥 Receiver</div>
+    </div>
+  </div>
+  <div class="debug-section">
+    <label>Tier</label>
+    <div class="debug-btns">
+      <div class="debug-btn" data-tier="silver" onclick="setTier('silver')">🥈 Silver</div>
+      <div class="debug-btn" data-tier="gold" onclick="setTier('gold')">🥇 Gold</div>
+      <div class="debug-btn" data-tier="platinum" onclick="setTier('platinum')">💎 Platinum</div>
+      <div class="debug-btn" data-tier="diamond" onclick="setTier('diamond')">💠 Diamond</div>
+      <div class="debug-btn active" data-tier="sultan" onclick="setTier('sultan')">👑 Sultan</div>
+    </div>
+  </div>
+  <div class="debug-section">
+    <label>Receiver Segment</label>
+    <div class="debug-btns debug-seg-btns">
+      <div class="debug-btn debug-seg-btn" data-seg="existing_active" onclick="setReceiverSegment('existing_active')">🧧 MAU</div>
+      <div class="debug-btn debug-seg-btn" data-seg="new_active" onclick="setReceiverSegment('new_active')">🔄 Resurrected</div>
+      <div class="debug-btn debug-seg-btn" data-seg="ra" onclick="setReceiverSegment('ra')">💤 Dormant</div>
+      <div class="debug-btn debug-seg-btn" data-seg="new_user" onclick="setReceiverSegment('new_user')">🆕 New User</div>
+    </div>
+  </div>
+  <div class="debug-section">
+    <label>Sender Milestone</label>
+    <div class="debug-milestone" id="debugMilestone">
+      <div class="debug-milestone-row">Sends: <strong id="dbg-sends">0</strong> · Next milestone: <strong id="dbg-next-milestone">3 sends → Rp 2,000</strong></div>
+    </div>
+    <div class="debug-btns">
+      <div class="debug-btn" onclick="debugSimulateSend()">📤 +1 Send</div>
+      <div class="debug-btn" onclick="state.senderMilestone=0;applyMeTab();updateDebugMilestone()">🔄 Reset</div>
+    </div>
+  </div>
+  <div class="debug-section">
+    <label>💰 Economics (from reward_config)</label>
+    <div class="debug-economics" id="debugEconomics"></div>
+  </div>
+  <div class="debug-info">Press <strong>D</strong> to toggle · Swipe up to send · Tap packet to open</div>
+</div>
+<div class="kbd-hint">Press <strong style="color:#555">D</strong> for debug</div>
+
+<script src="js/config.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
+</body>
+</html>
