@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sultan Pro v6 (Global)</title>
+<style>
+    :root {
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #0f172a;
+        --sub: #64748b;
+        --brand: #ea580c; /* Orange */
+        --accent: #f59e0b; /* Gold */
+        /* 4 Tier Colors */
+        --c-exist: #94a3b8;
+        --c-nmau: #3b82f6;
+        --c-ra: #8b5cf6;
+        --c-new: #10b981;
+    }
+    
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 16px 16px 180px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+    /* Header */
+    .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .header h1 { margin: 0; font-size: 24px; font-weight: 900; color: var(--brand); }
+    .budget-label { font-size: 10px; font-weight: 700; color: var(--sub); text-transform: uppercase; text-align: right; }
+    .budget-val { font-size: 22px; font-weight: 800; color: #15803d; line-height: 1; text-align: right; }
+    .budget-sub { font-size: 11px; color: var(--sub); text-align: right; }
+
+    /* KPI Grid */
+    .kpi-container {
+        position: sticky; top: 0; z-index: 99; 
+        background: var(--bg); padding-bottom: 12px; padding-top: 4px;
+        border-bottom: 1px solid #e2e8f0; margin-bottom: 16px;
+    }
+    
+    /* Row 1: Costs */
+    .kpi-row-cost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+    /* Row 2: Volumes */
+    .kpi-row-vol { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+    .kpi-card { 
+        background: #1e293b; color: white; padding: 10px 4px; border-radius: 10px; text-align: center; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: flex; flex-direction: column; justify-content: center;
+    }
+    .kpi-card.vol { background: #fff; color: var(--text); border: 1px solid #e2e8f0; }
+    
+    .kpi-title { font-size: 9px; font-weight: 700; opacity: 0.7; margin-bottom: 2px; text-transform: uppercase; }
+    .kpi-val { font-size: 15px; font-weight: 800; color: var(--accent); }
+    .kpi-card.vol .kpi-val { color: var(--brand); font-size: 16px; }
+    .kpi-card.vol .kpi-title { color: var(--sub); opacity: 1; }
+    .kpi-tgt { font-size: 8px; opacity: 0.5; margin-top: 2px; }
+    
+    /* Status Colors */
+    .good { background: #064e3b; } .bad { background: #7f1d1d; }
+
+    /* Controls */
+    .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .card-h { font-size: 12px; font-weight: 800; color: var(--sub); text-transform: uppercase; margin-bottom: 12px; display:flex; align-items:center; gap:6px; }
+    
+    .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .lbl { font-size: 13px; font-weight: 600; color: var(--text); }
+    .val { font-size: 12px; font-family: monospace; background: #fff7ed; color: var(--brand); padding: 2px 6px; border-radius: 4px; }
+    
+    input[type=range] { width: 100%; margin-bottom: 16px; accent-color: var(--brand); }
+    input[type=number] { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-weight: 600; font-size: 12px; }
+
+    /* 4-Seg Inputs */
+    .seg-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; align-items: center; }
+    .seg-head { font-size: 9px; font-weight: 700; color: var(--sub); text-align: center; margin-bottom: 4px; }
+    .seg-row-label { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    
+    .freq-badge { font-size: 10px; background: #e0f2fe; color: #0284c7; padding: 2px 4px; border-radius: 4px; font-weight: 700; }
+    .one-time-badge { font-size: 10px; background: #f1f5f9; color: #94a3b8; padding: 2px 4px; border-radius: 4px; }
+
+    /* Visuals */
+    .stack-wrap { height: 16px; display: flex; border-radius: 4px; overflow: hidden; margin-top: 10px; background: #f1f5f9; }
+    .stack-item { height: 100%; transition: width 0.3s; }
+    .note { font-size: 10px; color: var(--sub); margin-top: 6px; line-height: 1.4; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1>Sultan Pro <span style="font-size:12px; background:#fff7ed; color:#c2410c; padding:2px 6px; border-radius:4px;">v6.0</span></h1>
+        <p style="font-size:11px; color:#64748b;">English | Calibrated Defaults</p>
+    </div>
+    <div class="budget-box">
+        <div class="budget-label">Est. Budget (USD)</div>
+        <div class="budget-val" id="disp_total_usd">-</div>
+        <div class="budget-sub" id="disp_total_rp">-</div>
+    </div>
+</div>
+
+<!-- KPI Dashboard -->
+<div class="kpi-container">
+    <!-- Row 1: Unit Economics -->
+    <div class="kpi-row-cost">
+        <div class="kpi-card" id="card_cpimau">
+            <div class="kpi-title">CPIMAU</div>
+            <div class="kpi-val" id="val_cpimau">-</div>
+            <div class="kpi-tgt">Target: $1.25</div>
+        </div>
+        <div class="kpi-card" id="card_cpib">
+            <div class="kpi-title">CPIB</div>
+            <div class="kpi-val" id="val_cpib">-</div>
+            <div class="kpi-tgt">Target: $5.00</div>
+        </div>
+        <div class="kpi-card" id="card_cac">
+            <div class="kpi-title">CAC</div>
+            <div class="kpi-val" id="val_cac">-</div>
+            <div class="kpi-tgt">Target: $9.50</div>
+        </div>
+    </div>
+    <!-- Row 2: Volume Impact -->
+    <div class="kpi-row-vol">
+        <div class="kpi-card vol">
+            <div class="kpi-title">Inc. MAU</div>
+            <div class="kpi-val" id="val_inc_mau">-</div>
+        </div>
+        <div class="kpi-card vol">
+            <div class="kpi-title">Inc. New Users</div>
+            <div class="kpi-val" id="val_inc_new">-</div>
+        </div>
+    </div>
+</div>
+
+<!-- 1. Sender Tiering -->
+<div class="card">
+    <div class="card-h">👑 Sultan Boost (Sender Tier)</div>
+    <div class="row">
+        <span class="lbl" style="font-size:11px;">Tier Strength Multiplier</span>
+        <span class="val" id="disp_boost">1.0x</span>
+    </div>
+    <input type="range" id="in_tier_strength" min="1" max="2" step="0.1" value="1.5">
+    <div class="note">
+        * Applies to Receiver Rewards. High VIP participation increases effective payout by <strong style="color:var(--brand);" id="txt_boost_factor">-</strong>.
+    </div>
+</div>
+
+<!-- 2. Traffic -->
+<div class="card">
+    <div class="card-h">📡 Traffic (Supply)</div>
+    
+    <div class="row">
+        <span class="lbl">Senders (Participants)</span>
+        <span class="val" id="disp_senders">2M</span>
+    </div>
+    <input type="range" id="in_senders" min="100000" max="10000000" step="100000" value="500000">
+
+    <div class="row">
+        <span class="lbl">Avg Referrals / Sender</span>
+        <span class="val" id="disp_avg">4.5</span>
+    </div>
+    <input type="range" id="in_avg" min="1" max="20" step="0.5" value="4.5">
+    
+    <div style="text-align:right; font-size:11px; color:var(--sub);">
+        Total Claims Available: <strong id="disp_reach" style="color:var(--text);">2.25M</strong>
+    </div>
+</div>
+
+<!-- 3. Receiver Segments (FREQ LOGIC) -->
+<div class="card">
+    <div class="card-h">📊 Receiver Mix & Frequency</div>
+    
+    <!-- Frequency Control -->
+    <div style="background:#f0f9ff; padding:10px; border-radius:8px; margin-bottom:16px; border:1px solid #bae6fd;">
+        <div class="row" style="margin-bottom:8px;">
+            <span class="lbl" style="color:#0369a1; font-size:12px;">Existing User Freq (Claims/User)</span>
+            <span class="val" style="background:white; color:#0369a1;" id="disp_freq_ex">10</span>
+        </div>
+        <input type="range" id="in_freq_exist" min="1" max="50" step="1" value="10">
+        <div class="note" style="color:#0c4a6e;">
+            * Existing users claim multiple times (Max 50). Incremental users claim only 1 time (One-time).
+        </div>
+    </div>
+
+    <!-- 4-Tier Inputs -->
+    <div class="seg-grid">
+        <div class="seg-col"></div>
+        <div class="seg-col seg-head">Mix %</div>
+        <div class="seg-col seg-head">Reward(Rp)</div>
+        <div class="seg-col seg-head">CVR(%)</div>
+    </div>
+
+    <!-- Rows -->
+    <div class="seg-grid">
+        <div class="seg-row-label" style="color:var(--c-exist)">
+            <span class="dot" style="background:var(--c-exist)"></span>Existing
+            <span class="freq-badge" id="badge_freq">10x</span>
+        </div>
+        <input type="number" id="mix_exist" value="60">
+        <input type="number" id="rew_exist" value="200">
+        <input type="number" id="cv_exist" value="5">
+    </div>
+
+    <div class="seg-grid">
+        <div class="seg-row-label" style="color:var(--c-nmau)">
+            <span class="dot" style="background:var(--c-nmau)"></span>New Active
+            <span class="one-time-badge">1x</span>
+        </div>
+        <input type="number" id="mix_nmau" value="25">
+        <input type="number" id="rew_nmau" value="2000">
+        <input type="number" id="cv_nmau" value="8">
+    </div>
+
+    <div class="seg-grid">
+        <div class="seg-row-label" style="color:var(--c-ra)">
+            <span class="dot" style="background:var(--c-ra)"></span>RA (Wakeup)
+            <span class="one-time-badge">1x</span>
+        </div>
+        <input type="number" id="mix_ra" value="10">
+        <input type="number" id="rew_ra" value="10000">
+        <input type="number" id="cv_ra" value="15">
+    </div>
+
+    <div class="seg-grid">
+        <div class="seg-row-label" style="color:var(--c-new)">
+            <span class="dot" style="background:var(--c-new)"></span>New User
+            <span class="one-time-badge">1x</span>
+        </div>
+        <input type="number" id="mix_new" value="5">
+        <input type="number" id="rew_new" value="15000">
+        <input type="number" id="cv_new" value="20">
+    </div>
+
+    <!-- Visualization of Claim Consumption -->
+    <div style="margin-top:16px;">
+        <div class="row">
+            <span style="font-size:10px; font-weight:700; color:var(--sub);">Budget Consumption Share</span>
+        </div>
+        <div class="stack-wrap">
+            <div id="bar_exist" class="stack-item" style="background:var(--c-exist);"></div>
+            <div id="bar_nmau" class="stack-item" style="background:var(--c-nmau);"></div>
+            <div id="bar_ra" class="stack-item" style="background:var(--c-ra);"></div>
+            <div id="bar_new" class="stack-item" style="background:var(--c-new);"></div>
+        </div>
+        <div class="note">
+            * Note: Existing users consume <strong id="txt_claim_share_note">93%</strong> of total claims due to high frequency (x<span id="txt_freq_note">10</span>), despite having <span id="txt_mix_note">60%</span> population share.
+        </div>
+    </div>
+</div>
+
+<!-- 4. Sender Incentive -->
+<div class="card">
+    <div class="card-h">🏆 Sender Incentives (Milestone)</div>
+    <div style="display:flex; gap:12px;">
+        <div style="flex:1;">
+            <div style="font-size:9px; color:var(--sub); margin-bottom:4px;">Threshold (Pax)</div>
+            <input type="number" id="mile_step" value="3">
+        </div>
+        <div style="flex:1;">
+            <div style="font-size:9px; color:var(--sub); margin-bottom:4px;">Base Reward</div>
+            <input type="number" id="mile_base" value="2000">
+        </div>
+        <div style="flex:1;">
+            <div style="font-size:9px; color:var(--sub); margin-bottom:4px;">Increment</div>
+            <input type="number" id="mile_inc" value="2000">
+        </div>
+    </div>
+    <div style="margin-top:8px; font-size:11px; text-align:right;">
+        <span style="color:var(--sub);">Total Sender Cost: </span>
+        <strong id="disp_incentive_cost" style="color:var(--brand);">-</strong>
+    </div>
+</div>
+
+<script>
+    // --- Config ---
+    const RATE = 16000;
+    const OPS_COST = 200000000;
+
+    // Helpers
+    const getVal = (id) => Number(document.getElementById(id).value);
+    const setTxt = (id, val) => document.getElementById(id).innerText = val;
+    const fmtK = n => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : (n/1000).toFixed(0)+'k';
+    const fmtKDec = n => n >= 1000000 ? (n/1000000).toFixed(2)+'M' : (n/1000).toFixed(1)+'k'; // More decimal for MAU
+    const fmtUSD = n => '$' + n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const fmtRpB = n => 'Rp ' + (n/1000000000).toFixed(2) + ' B';
+
+    function calc() {
+        // 1. Sultan Boost (Tiering)
+        const strength = getVal('in_tier_strength');
+        // 95/85/70/50 Tier Logic
+        const weightedMult = (0.05*strength) + (0.10*strength*0.8) + (0.15*1.0) + (0.20*0.8) + (0.50*0.5);
+        setTxt('disp_boost', weightedMult.toFixed(2) + 'x');
+        setTxt('txt_boost_factor', weightedMult.toFixed(2) + 'x');
+
+        // 2. Traffic Supply (Total Claims)
+        const senders = getVal('in_senders');
+        const avg = getVal('in_avg');
+        const totalClaims = senders * avg; // Supply Side
+        setTxt('disp_senders', fmtK(senders));
+        setTxt('disp_avg', avg);
+        setTxt('disp_reach', fmtK(totalClaims));
+
+        // 3. Receiver Logic (Weighted Frequency)
+        const freqExist = getVal('in_freq_exist');
+        setTxt('disp_freq_ex', freqExist);
+        setTxt('badge_freq', freqExist+'x');
+        setTxt('txt_freq_note', freqExist);
+
+        // Raw Mix Inputs (Population Share)
+        const rawExist = getVal('mix_exist');
+        const rawNmau = getVal('mix_nmau');
+        const rawRa = getVal('mix_ra');
+        const rawNew = getVal('mix_new');
+        const totalMix = rawExist + rawNmau + rawRa + rawNew;
+
+        // Normalized Population Mix
+        const popExist = rawExist / totalMix;
+        const popNmau = rawNmau / totalMix;
+        const popRa = rawRa / totalMix;
+        const popNew = rawNew / totalMix;
+        
+        setTxt('txt_mix_note', (popExist*100).toFixed(0)+'%');
+
+        // Calculate Weighted Frequency of Population
+        // Avg Freq = (%Exist * Freq) + (%Others * 1)
+        const avgFreqPop = (popExist * freqExist) + (popNmau * 1) + (popRa * 1) + (popNew * 1);
+
+        // Derive Unique Users Reached based on Supply & Frequency
+        // Total Claims = Unique Users * Avg Freq
+        // Unique Users = Total Claims / Avg Freq
+        const totalUniqueReceivers = totalClaims / avgFreqPop;
+
+        // Calculate Absolute Unique Users per Segment
+        const uniqueExist = totalUniqueReceivers * popExist;
+        const uniqueNmau = totalUniqueReceivers * popNmau;
+        const uniqueRa = totalUniqueReceivers * popRa;
+        const uniqueNew = totalUniqueReceivers * popNew;
+
+        // Calculate Claims Consumed per Segment
+        const claimsExist = uniqueExist * freqExist;
+        const claimsNmau = uniqueNmau * 1;
+        const claimsRa = uniqueRa * 1;
+        const claimsNew = uniqueNew * 1;
+        
+        // Calculate Claim Share (for Visualization)
+        const shareExist = claimsExist / totalClaims;
+        const shareNmau = claimsNmau / totalClaims;
+        const shareRa = claimsRa / totalClaims;
+        const shareNew = claimsNew / totalClaims;
+        
+        setTxt('txt_claim_share_note', (shareExist*100).toFixed(1)+'%');
+
+        // Update Visual Bars
+        document.getElementById('bar_exist').style.width = (shareExist*100)+'%';
+        document.getElementById('bar_nmau').style.width = (shareNmau*100)+'%';
+        document.getElementById('bar_ra').style.width = (shareRa*100)+'%';
+        document.getElementById('bar_new').style.width = (shareNew*100)+'%';
+
+        // 4. Cost Calculation (Receiver)
+        // Cost = Claims * Reward * TierMult
+        const cExist = claimsExist * getVal('rew_exist') * weightedMult;
+        const cNmau = claimsNmau * getVal('rew_nmau') * weightedMult;
+        const cRa = claimsRa * getVal('rew_ra') * weightedMult;
+        const cNew = claimsNew * getVal('rew_new') * weightedMult;
+        const totalRecCost = cExist + cNmau + cRa + cNew;
+
+        // 5. Cost Calculation (Sender)
+        const step = getVal('mile_step');
+        const base = getVal('mile_base');
+        const inc = getVal('mile_inc');
+        const milestones = Math.floor(avg / step);
+        let payout = 0;
+        for(let i=0; i<milestones; i++) payout += (base + (i * inc));
+        const totalSenderCost = senders * payout * weightedMult;
+        setTxt('disp_incentive_cost', fmtRpB(totalSenderCost));
+
+        // 6. Total Budget
+        const totalRp = totalRecCost + totalSenderCost + OPS_COST;
+        const totalUsd = totalRp / RATE;
+        
+        setTxt('disp_total_rp', fmtRpB(totalRp));
+        setTxt('disp_total_usd', fmtUSD(totalUsd));
+
+        // 7. KPI Calculation
+        // Incr MAU = Unique NMAU + Unique RA + Unique New (Excluded Existing)
+        const incMAU = uniqueNmau + uniqueRa + uniqueNew;
+        
+        // Incr Buyers
+        const cvNmau = getVal('cv_nmau')/100;
+        const cvRa = getVal('cv_ra')/100;
+        const cvNew = getVal('cv_new')/100;
+        const incBuyers = (uniqueNmau * cvNmau) + (uniqueRa * cvRa) + (uniqueNew * cvNew);
+        
+        // CAC (New Users Only)
+        const buyersNew = uniqueNew * cvNew;
+
+        const cpimau = totalUsd / (incMAU || 1);
+        const cpib = totalUsd / (incBuyers || 1);
+        const cac = totalUsd / (buyersNew || 1);
+
+        // Update KPI Cards
+        updateKpi('card_cpimau', 'val_cpimau', cpimau, 1.25);
+        updateKpi('card_cpib', 'val_cpib', cpib, 5.00);
+        updateKpi('card_cac', 'val_cac', cac, 9.50);
+        
+        // Update Volume Metrics
+        setTxt('val_inc_mau', fmtKDec(incMAU));
+        setTxt('val_inc_new', fmtKDec(uniqueNew));
+    }
+
+    function updateKpi(cardId, valId, val, target) {
+        setTxt(valId, fmtUSD(val));
+        const card = document.getElementById(cardId);
+        if (val <= target) {
+            card.className = 'kpi-card good';
+        } else {
+            card.className = 'kpi-card bad';
+        }
+    }
+
+    document.querySelectorAll('input').forEach(el => el.addEventListener('input', calc));
+    calc();
+
+</script>
+</body>
+</html>

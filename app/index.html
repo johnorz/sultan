@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Shopee Sultan — Interactive Prototype</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=3">
+  <link rel="stylesheet" href="css/styles.css?v=4">
 </head>
 <body>
 
@@ -330,11 +330,18 @@
     <label>💰 Economics (from reward_config)</label>
     <div class="debug-economics" id="debugEconomics"></div>
   </div>
+  <div class="debug-section">
+    <label>📎 Resources</label>
+    <div class="debug-btns">
+      <div class="debug-btn" onclick="window.open('simulator.html','_blank')">📊 Budget Simulator</div>
+      <div class="debug-btn" onclick="window.open('user_guide.pdf','_blank')">📄 User Guide</div>
+    </div>
+  </div>
   <div class="debug-info">Press <strong>D</strong> to toggle · Swipe up to send · Tap packet to open</div>
 </div>
 <div class="kbd-hint">Press <strong style="color:#555">D</strong> for debug</div>
 
-<script src="js/config.js?v=3"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/config.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
 </body>
 </html>
