@@ -14,7 +14,8 @@ body {
   font-family: 'Open Sans', sans-serif;
   background: #111; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; overflow: hidden;
+  min-height: 100vh; min-height: 100dvh;
+  overflow: hidden;
 }
 
 /* ========== PHONE FRAME WRAPPER ========== */
@@ -671,7 +672,7 @@ body {
 /* ========== DEBUG PANEL ========== */
 .debug-toggle { position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 9999; transition: all 0.2s; opacity: 0.3; }
 .debug-toggle:hover { opacity: 1; background: rgba(252,211,77,0.1); border-color: rgba(252,211,77,0.3); }
-.debug-panel { position: fixed; bottom: 70px; right: 20px; width: 260px; background: rgba(15,15,46,0.98); border: 1px solid rgba(252,211,77,0.2); border-radius: 16px; padding: 20px; z-index: 9999; backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: translateY(10px); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+.debug-panel { position: fixed; bottom: 70px; right: 20px; width: 260px; max-height: calc(100vh - 90px); max-height: calc(100dvh - 90px); background: rgba(15,15,46,0.98); border: 1px solid rgba(252,211,77,0.2); border-radius: 16px; padding: 20px; z-index: 9999; backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: translateY(10px); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .debug-panel.open { transform: translateY(0); opacity: 1; pointer-events: all; }
 .debug-panel h4 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
 .debug-section { margin-bottom: 16px; }
@@ -699,3 +700,48 @@ body {
 
 /* ========== TOAST ========== */
 .toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(252,211,77,0.95); color: #000; padding: 10px 20px; border-radius: 10px; font-size: 12px; font-weight: 700; pointer-events: none; opacity: 0; transition: all 0.3s; z-index: 99999; }
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 500px) {
+  body {
+    align-items: flex-start;
+    overflow: auto; -webkit-overflow-scrolling: touch;
+    padding: 0; min-height: 100vh; min-height: 100dvh;
+  }
+  .phone-frame-wrapper {
+    width: 100%; display: flex; justify-content: center;
+  }
+  .phone-frame {
+    border-radius: 0; width: 100%; height: 100vh; height: 100dvh;
+    box-shadow: none;
+  }
+  /* Debug panel: full-width bottom sheet on mobile */
+  .debug-toggle { bottom: 16px; right: 16px; width: 44px; height: 44px; opacity: 0.6; }
+  .debug-panel {
+    left: 0; right: 0; bottom: 0; top: auto;
+    width: 100%; max-width: 100%;
+    max-height: 70vh; max-height: 70dvh;
+    border-radius: 20px 20px 0 0;
+    padding: 16px 20px 32px;
+    transform: translateY(100%);
+  }
+  .debug-panel.open { transform: translateY(0); }
+  /* Drag handle hint */
+  .debug-panel::before {
+    content: ''; display: block; width: 36px; height: 4px;
+    background: rgba(255,255,255,0.15); border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+  .kbd-hint { display: none; }
+  .toast { top: 20px; font-size: 11px; padding: 8px 16px; max-width: 90vw; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Slightly wider phones / small tablets in portrait */
+@media (max-width: 500px) and (max-height: 700px) {
+  .debug-panel { max-height: 60vh; max-height: 60dvh; }
+}
+
+/* Touch devices: make debug toggle more visible */
+@media (hover: none) and (pointer: coarse) {
+  .debug-toggle { opacity: 0.6; width: 44px; height: 44px; font-size: 18px; }
+}

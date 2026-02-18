@@ -927,8 +927,14 @@ function renderDebugEconomics() {
 
 // ===== SCALE PHONE FRAME TO FIT VIEWPORT =====
 // Uses CSS zoom (not transform:scale) so hit-testing, scrolling, and pointer events work correctly.
+// On mobile (<= 500px), the phone frame goes full-screen — no zoom needed.
 function scalePhoneFrame() {
   const frame = document.querySelector('.phone-frame');
+  const isMobile = window.innerWidth <= 500;
+  if (isMobile) {
+    frame.style.zoom = '';
+    return;
+  }
   const frameW = 375, frameH = 812;
   const pad = 20;
   const maxW = window.innerWidth - pad * 2;
