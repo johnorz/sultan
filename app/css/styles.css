@@ -102,6 +102,24 @@ body {
 .sh-normal .sh-title { color: var(--black); }
 .sh-tagline-vip { font-size: 9px; color: #999; letter-spacing: 2px; text-transform: uppercase; margin-top: 1px; opacity: 1; }
 
+/* ========== SCORE SECTION (uniform for all tiers) ========== */
+.score-section { margin: 0 20px 6px; padding: 10px 14px; border-radius: 12px; position: relative; }
+.score-section-light { background: #fff5f2; border: 1px solid rgba(238,77,45,0.1); }
+.score-section-dark { background: rgba(252,211,77,0.04); border: 1px solid rgba(252,211,77,0.08); }
+.score-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.score-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.score-label-light { color: #999; }
+.score-label-dark { color: #888; }
+.score-value { font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+.score-value-vip { color: var(--gold); }
+.score-bar-bg { height: 6px; border-radius: 3px; width: 100%; overflow: hidden; }
+.score-bar-bg-light { background: #eee; }
+.score-bar-bg-dark { background: rgba(255,255,255,0.06); }
+.score-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.score-tip { font-size: 9px; margin-top: 6px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+.score-tip-light { color: var(--orange); }
+.score-tip-dark { color: var(--gold); }
+
 /* ========== BALANCE CARD ========== */
 .balance-card { margin: 0 20px 0; border-radius: 16px; padding: 20px; text-align: center; position: relative; z-index: 2; }
 .bc-normal { background: #fff; box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
@@ -626,7 +644,8 @@ body {
   opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
 }
 .recv-result-overlay.show { opacity: 1; pointer-events: all; }
-.recv-result-overlay .confetti-container { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+.recv-overlay-dim { position: absolute; inset: 0; background: rgba(0,0,0,0.55); z-index: 1; }
+.recv-result-overlay .confetti-container { position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
 .recv-result-overlay .confetti { position: absolute; font-size: 16px; top: -20px; }
 .recv-result-overlay .confetti:nth-child(1) { left: 10%; animation: confettiFall 3s ease-in infinite; }
 .recv-result-overlay .confetti:nth-child(2) { left: 25%; animation: confettiFall 3s ease-in 0.3s infinite; font-size: 12px; }
@@ -637,34 +656,52 @@ body {
 .recv-result-overlay .confetti:nth-child(7) { left: 55%; animation: confettiFall 3s ease-in 0.5s infinite; }
 .recv-result-overlay .confetti:nth-child(8) { left: 90%; animation: confettiFall 3s ease-in 0.9s infinite; font-size: 18px; }
 @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(500px) rotate(360deg); opacity: 0; } }
-.recv-result-content {
-  position: relative; z-index: 2; text-align: center; padding: 0 20px;
+
+/* Frosted glass card */
+.recv-result-card {
+  position: relative; z-index: 10; text-align: center;
+  background: rgba(10,10,30,0.85); backdrop-filter: blur(24px);
+  border-radius: 24px; padding: 28px 20px 20px;
+  margin: 0 20px; width: calc(100% - 40px); max-width: 320px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.5);
   animation: resultPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   animation-delay: 0.1s;
 }
 @keyframes resultPopIn { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-.recv-result-content .jackpot-badge { display: inline-block; background: linear-gradient(135deg, #4ecdc4, #44a08d); color: #fff; font-size: 10px; font-weight: 800; padding: 6px 16px; border-radius: 100px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
-.recv-result-content .jackpot-amount { font-size: 48px; font-weight: 800; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
-.recv-result-content .jackpot-amount span { font-size: 22px; }
-.recv-result-content .jackpot-label { color: #888; font-size: 12px; margin-top: 8px; }
-.recv-result-content .jackpot-source { display: inline-flex; align-items: center; gap: 6px; background: rgba(252,211,77,0.1); border: 1px solid rgba(252,211,77,0.2); border-radius: 100px; padding: 6px 16px; margin-top: 16px; font-size: 11px; color: var(--gold); font-weight: 600; }
-.recv-result-content .withdraw-btn {
-  display: block; width: 80%; margin: 24px auto 0; padding: 14px;
-  background: var(--gold-gradient); color: #000; border: none; border-radius: 14px;
+.recv-result-celebration { font-size: 36px; margin-bottom: 6px; }
+.recv-result-card .jackpot-badge {
+  display: inline-block; color: #fff; font-size: 9px; font-weight: 800;
+  padding: 5px 14px; border-radius: 100px; letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.recv-result-card .jackpot-amount { font-size: 44px; font-weight: 800; line-height: 1; }
+.recv-result-card .jackpot-amount span { font-size: 20px; }
+.recv-result-card .jackpot-label { font-size: 11px; margin-top: 6px; color: #888; }
+.recv-result-card .jackpot-source {
+  display: inline-flex; align-items: center; gap: 4px;
+  border-radius: 100px; padding: 5px 14px; margin-top: 12px;
+  font-size: 10px; font-weight: 600;
+}
+.recv-result-card .withdraw-btn {
+  display: block; width: 100%; margin: 18px 0 0; padding: 14px;
+  color: #000; border: none; border-radius: 12px;
   font-size: 14px; font-weight: 800; font-family: inherit; cursor: pointer;
-  box-shadow: 0 8px 24px rgba(252,211,77,0.3); position: relative; overflow: hidden;
+  position: relative; overflow: hidden;
 }
-.recv-result-content .withdraw-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2.5s infinite; }
-.recv-result-content .recv-done-btn { margin-top: 16px; padding: 10px 24px; background: transparent; color: #666; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; }
+.recv-result-card .withdraw-btn::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2.5s infinite;
+}
+.recv-result-card .recv-done-btn {
+  margin-top: 10px; padding: 8px 20px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; font-size: 11px; font-weight: 600; font-family: inherit;
+  cursor: pointer; color: #666;
+}
 
-/* Light burst behind result */
-.recv-light-burst {
-  position: absolute; width: 300px; height: 300px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(252,211,77,0.15) 0%, transparent 70%);
-  z-index: 1; animation: lightBurst 1s ease-out forwards;
-  pointer-events: none;
-}
-@keyframes lightBurst { 0% { transform: scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(2); opacity: 0.3; } }
+/* Light burst behind result — kept for backwards compat */
+.recv-light-burst { display: none; }
 
 /* ========== DEBUG PANEL ========== */
 .debug-toggle { position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 9999; transition: all 0.2s; opacity: 0.3; }

@@ -57,13 +57,17 @@ function applyReceiverSegment() {
   if (!seg) return;
   const t = tierData();
   const c = CONFIG.currency;
+  const rv = getReceiverTierVisuals(state.tier);
 
   // Update result overlay content
   const badge = $('jackpot-badge');
   const amount = $('jackpot-amount');
   const bonus = $('jackpot-bonus');
   const source = $('jackpot-source');
-  if (!badge || !amount) return;
+  const card = $('recvResultCard');
+  const celebration = $('recv-result-celebration');
+  const withdrawBtn = $('withdraw-btn');
+  if (!badge || !amount || !card) return;
 
   badge.textContent = `${seg.badgeIcon} ${seg.badge}`;
   badge.style.background = `linear-gradient(135deg, ${seg.badgeColor}, ${seg.badgeColor}cc)`;
@@ -77,7 +81,38 @@ function applyReceiverSegment() {
   amount.textContent = c.format(displayAmount);
 
   bonus.textContent = seg.isIncremental ? 'Exclusive reward for you!' : 'Standard gift reward';
+  bonus.style.color = rv.subtitleColor;
   source.textContent = `${t.packetSeal} Sultan Ahmad · ${t.name}`;
+
+  // Apply tier-colored card styling
+  card.style.background = rv.cardBg;
+  card.style.border = rv.cardBorder;
+
+  // Celebration emoji
+  if (celebration) celebration.textContent = rv.celebration;
+
+  // Amount gradient
+  const amountParent = amount.parentElement;
+  amountParent.style.background = rv.amountGradient;
+  amountParent.style.webkitBackgroundClip = 'text';
+  amountParent.style.webkitTextFillColor = 'transparent';
+  amountParent.style.filter = `drop-shadow(${rv.amountShadow})`;
+
+  // Source pill
+  source.style.background = rv.sourceBg;
+  source.style.border = rv.sourceBorder;
+  source.style.color = rv.sourceColor;
+
+  // Withdraw button
+  if (withdrawBtn) {
+    withdrawBtn.style.background = rv.withdrawBg;
+    withdrawBtn.style.color = rv.withdrawColor;
+    withdrawBtn.style.boxShadow = rv.withdrawShadow;
+  }
+
+  // Done button color
+  const doneBtn = card.querySelector('.recv-done-btn');
+  if (doneBtn) doneBtn.style.color = rv.doneColor;
 
   // Update receiver locked screen hint based on segment
   const tag = $('recv-extra-tag');
@@ -150,7 +185,7 @@ function toggleScoreTooltip(e) {
     <div class="score-tt-row"><span>${scoring.socialEngagement.label} (${Math.round(scoring.socialEngagement.weight*100)}%)</span><strong>${sc.social}/${scoring.socialEngagement.maxPoints}</strong></div>
     <div class="score-tt-total"><span>Total</span><strong>${sc.vip + sc.spend + sc.activity + sc.social}/100</strong></div>
   `;
-  e.currentTarget.closest('.sender-header, .balance-card').appendChild(tooltip);
+  e.currentTarget.closest('.score-section, .sender-header, .balance-card').appendChild(tooltip);
   // Auto-close on outside click
   setTimeout(() => {
     document.addEventListener('click', function closeTooltip() {
@@ -158,6 +193,127 @@ function toggleScoreTooltip(e) {
       document.removeEventListener('click', closeTooltip);
     }, { once: true });
   }, 10);
+}
+
+// ===== SCORE SECTION (uniform for all tiers) =====
+function getUpgradeTip(tierId) {
+  const tips = {
+    silver: '💡 Spend Rp 500K/mo to reach Sahabat',
+    gold: '💡 Subscribe to VIP to reach Dermawan',
+    platinum: '💡 Spend Rp 3M more to reach Juragan',
+    diamond: '💡 Upgrade to VIP Platinum to reach Sultan',
+    sultan: '👑 You\'re at the top!',
+  };
+  return tips[tierId] || '';
+}
+
+function applyScoreSection(variant, t, score) {
+  // variant is 'normal' or 'vip'
+  const valueEl = $(`score-value-${variant}`);
+  const barEl = $(`score-bar-${variant}`);
+  const tipEl = $(`score-tip-${variant}`);
+  if (!valueEl || !barEl || !tipEl) return;
+
+  // Update score value text (keep the ⓘ icon that's already in the HTML)
+  const infoIcon = valueEl.querySelector('.score-info-icon');
+  valueEl.textContent = `${score} / 100 `;
+  if (infoIcon) valueEl.appendChild(infoIcon);
+
+  // Update bar fill
+  barEl.style.width = `${score}%`;
+  barEl.style.background = state.tier === 'sultan' ? 'var(--gold-gradient)' : t.color;
+
+  // Update tip
+  tipEl.textContent = getUpgradeTip(state.tier);
+
+  // Update score value color
+  if (variant === 'normal') {
+    valueEl.style.color = t.color;
+  }
+}
+
+// ===== RECEIVER TIER-COLOR MAPPING =====
+function getReceiverTierVisuals(tierId) {
+  const t = CONFIG.tiers[tierId];
+  const rgb = hexToRgb(t.color);
+  const map = {
+    silver: {
+      cardBg: 'rgba(15,15,30,0.85)',
+      cardBorder: `1px solid rgba(${rgb},0.2)`,
+      amountGradient: 'linear-gradient(135deg,#fff,#CBD5E0)',
+      amountShadow: `0 0 12px rgba(${rgb},0.3)`,
+      sourceBg: `rgba(${rgb},0.1)`,
+      sourceBorder: `1px solid rgba(${rgb},0.2)`,
+      sourceColor: t.color,
+      withdrawBg: 'linear-gradient(135deg,#CBD5E0,#A0AEC0)',
+      withdrawColor: '#333',
+      withdrawShadow: `0 6px 20px rgba(${rgb},0.25)`,
+      subtitleColor: '#888',
+      doneColor: '#999',
+      celebration: '🧧',
+    },
+    gold: {
+      cardBg: 'rgba(10,20,10,0.85)',
+      cardBorder: `1px solid rgba(${rgb},0.2)`,
+      amountGradient: 'linear-gradient(135deg,#9AE6B4,#38A169)',
+      amountShadow: `0 0 12px rgba(${rgb},0.3)`,
+      sourceBg: `rgba(${rgb},0.1)`,
+      sourceBorder: `1px solid rgba(${rgb},0.2)`,
+      sourceColor: t.color,
+      withdrawBg: 'linear-gradient(135deg,#68D391,#38A169)',
+      withdrawColor: '#000',
+      withdrawShadow: `0 6px 20px rgba(${rgb},0.25)`,
+      subtitleColor: '#7a9',
+      doneColor: '#7a9',
+      celebration: '🌿',
+    },
+    platinum: {
+      cardBg: 'rgba(10,15,40,0.85)',
+      cardBorder: `1px solid rgba(${rgb},0.2)`,
+      amountGradient: 'linear-gradient(135deg,#90CDF4,#3182CE)',
+      amountShadow: `0 0 12px rgba(${rgb},0.3)`,
+      sourceBg: `rgba(${rgb},0.1)`,
+      sourceBorder: `1px solid rgba(${rgb},0.2)`,
+      sourceColor: t.color,
+      withdrawBg: 'linear-gradient(135deg,#63B3ED,#3182CE)',
+      withdrawColor: '#000',
+      withdrawShadow: `0 6px 20px rgba(${rgb},0.25)`,
+      subtitleColor: '#6899c8',
+      doneColor: '#6899c8',
+      celebration: '❄️',
+    },
+    diamond: {
+      cardBg: 'rgba(20,10,40,0.85)',
+      cardBorder: `1px solid rgba(${rgb},0.2)`,
+      amountGradient: 'linear-gradient(135deg,#D6BCFA,#805AD5)',
+      amountShadow: `0 0 12px rgba(${rgb},0.3)`,
+      sourceBg: `rgba(${rgb},0.1)`,
+      sourceBorder: `1px solid rgba(${rgb},0.2)`,
+      sourceColor: t.color,
+      withdrawBg: 'linear-gradient(135deg,#B794F4,#805AD5)',
+      withdrawColor: '#fff',
+      withdrawShadow: `0 6px 20px rgba(${rgb},0.25)`,
+      subtitleColor: '#a88fd4',
+      doneColor: '#a88fd4',
+      celebration: '💎',
+    },
+    sultan: {
+      cardBg: 'rgba(10,10,30,0.85)',
+      cardBorder: '1px solid rgba(252,211,77,0.15)',
+      amountGradient: 'var(--gold-gradient)',
+      amountShadow: '0 0 20px rgba(252,211,77,0.3)',
+      sourceBg: 'rgba(252,211,77,0.08)',
+      sourceBorder: '1px solid rgba(252,211,77,0.15)',
+      sourceColor: 'var(--gold)',
+      withdrawBg: 'var(--gold-gradient)',
+      withdrawColor: '#000',
+      withdrawShadow: '0 6px 20px rgba(252,211,77,0.25)',
+      subtitleColor: '#888',
+      doneColor: '#888',
+      celebration: '👑',
+    },
+  };
+  return map[tierId] || map.sultan;
 }
 
 // ===== TOAST =====
@@ -754,14 +910,9 @@ function applyTier() {
   // --- Normal sender dashboard ---
   $('sender-balance').textContent = c.format(t.giftBudget);
   $('sender-packets').textContent = `${t.maxPackets} packets remaining`;
-  $('sender-tier-badge').style.background = v.badgeBg;
-  $('sender-tier-badge').style.color = v.badgeColor;
-  $('sender-tier-dot').style.background = t.color;
-
-  $('sender-tier-text').textContent = `${t.name} · Score ${score}/100`;
 
   $('sender-intro').textContent = 'Send red packets to friends and earn rewards for every successful referral!';
-  $('sender-title').textContent = CONFIG.strings.senderNormal.headerTitle;
+  $('sender-title').textContent = `🧧 ${t.name}`;
   $('sender-tagline').textContent = `${monthStr}`;
   $('sendHintNormal').textContent = CONFIG.strings.senderNormal.swipeHint;
   $('sendSubNormal').textContent = `${t.maxPackets} packets · Swipe to gift`;
@@ -769,12 +920,18 @@ function applyTier() {
   $('packetWrapperNormal').className = v.tierClass;
   $('sealNormal').textContent = t.packetSeal;
 
+  // --- Score section (normal) ---
+  applyScoreSection('normal', t, score);
+
   // --- VIP sender dashboard ---
   $('vip-balance').textContent = c.format(t.giftBudget);
   $('vip-packets-val').textContent = t.maxPackets;
   $('vip-title').textContent = `${t.name} Privilege`;
-  $('vip-tier-label').textContent = `Score ${score}/100 · ${monthStr}`;
+  $('vip-tier-label').textContent = `${monthStr}`;
   $('vip-bal-label').textContent = t.isVip ? CONFIG.strings.senderVip.balanceLabel : CONFIG.strings.senderNormal.balanceLabel;
+
+  // --- Score section (VIP) ---
+  applyScoreSection('vip', t, score);
   $('vip-intro').textContent = 'Share your generosity. Send exclusive gifts and earn milestone rewards.';
   $('vip-micro-packets').textContent = `${t.maxPackets} packets`;
   $('vip-micro-each').textContent = `Swipe to gift`;

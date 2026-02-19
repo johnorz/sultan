@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Shopee Sultan — Interactive Prototype</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=7">
+  <link rel="stylesheet" href="css/styles.css?v=8">
 </head>
 <body>
 
@@ -22,19 +22,22 @@
     </div>
     <div class="scrollable-content">
       <div class="sender-header sh-normal">
-        <h2 class="sh-title" id="sender-title">🧧 Shopee Traktir</h2>
+        <h2 class="sh-title" id="sender-title">🧧 Teman</h2>
         <div class="sh-tagline" id="sender-tagline">Feb 2026</div>
         <div class="sh-intro" id="sender-intro">Send red packets to friends and earn rewards for every successful referral!</div>
+      </div>
+      <div class="score-section score-section-light" id="score-section-normal">
+        <div class="score-top">
+          <span class="score-label score-label-light">Your Score</span>
+          <span class="score-value" id="score-value-normal">10 / 100 <span class="score-info-icon" onclick="toggleScoreTooltip(event)">ⓘ</span></span>
+        </div>
+        <div class="score-bar-bg score-bar-bg-light"><div class="score-bar-fill" id="score-bar-normal"></div></div>
+        <div class="score-tip score-tip-light" id="score-tip-normal">💡 Spend Rp 500K/mo to reach Sahabat</div>
       </div>
       <div class="balance-card bc-normal">
         <div class="bal-label">Your Treat Balance</div>
         <div class="bal-amount"><span>Rp</span> <span id="sender-balance">200,000</span></div>
         <div class="packets-left" id="sender-packets">15 packets remaining</div>
-        <div class="tier-badge-inline" id="sender-tier-badge">
-          <span id="sender-tier-dot" class="tier-dot"></span>
-          <span id="sender-tier-text">Sahabat · Score 35/100</span>
-          <span class="score-info-icon" onclick="toggleScoreTooltip(event)">ⓘ</span>
-        </div>
       </div>
       <div class="packet-send-area psa-normal" id="sendAreaNormal">
         <div id="packetWrapperNormal" class="tier-gold">
@@ -70,8 +73,16 @@
     <div class="scrollable-content">
       <div class="sender-header sh-vip">
         <h2 class="sh-title sh-title-vip" id="vip-title">Sultan Privilege</h2>
-        <div class="sh-tagline sh-tagline-vip" id="vip-tier-label">Score 92/100 · Feb 2026 <span class="score-info-icon score-info-vip" onclick="toggleScoreTooltip(event)">ⓘ</span></div>
+        <div class="sh-tagline sh-tagline-vip" id="vip-tier-label">Feb 2026</div>
         <div class="sh-intro sh-intro-vip" id="vip-intro">Share your generosity. Send exclusive gifts and earn milestone rewards.</div>
+      </div>
+      <div class="score-section score-section-dark" id="score-section-vip">
+        <div class="score-top">
+          <span class="score-label score-label-dark">Your Score</span>
+          <span class="score-value score-value-vip" id="score-value-vip">98 / 100 <span class="score-info-icon score-info-vip" onclick="toggleScoreTooltip(event)">ⓘ</span></span>
+        </div>
+        <div class="score-bar-bg score-bar-bg-dark"><div class="score-bar-fill" id="score-bar-vip"></div></div>
+        <div class="score-tip score-tip-dark" id="score-tip-vip">👑 You're at the top!</div>
       </div>
       <div class="balance-card bc-vip">
         <div class="bal-label" id="vip-bal-label">Sultan Treasury</div>
@@ -265,19 +276,20 @@
     <div class="recv-burst-particles" id="recvBurstParticles"></div>
     <!-- Result revealed in-place (no page navigation) -->
     <div class="recv-result-overlay" id="recvResultOverlay">
+      <div class="recv-overlay-dim"></div>
       <div class="confetti-container">
         <div class="confetti">🪙</div><div class="confetti">✨</div>
         <div class="confetti">🪙</div><div class="confetti">⭐</div>
         <div class="confetti">🪙</div><div class="confetti">✨</div>
         <div class="confetti">🪙</div><div class="confetti">⭐</div>
       </div>
-      <div class="recv-light-burst"></div>
-      <div class="recv-result-content">
+      <div class="recv-result-card" id="recvResultCard">
+        <div class="recv-result-celebration" id="recv-result-celebration">🎉</div>
         <div class="jackpot-badge" id="jackpot-badge">🎉 Welcome Back Gift</div>
         <div class="jackpot-amount"><span>Rp</span> <span id="jackpot-amount">50,000</span></div>
-        <div class="jackpot-label" id="jackpot-bonus">+ 10 Bonus Coins from Sultan</div>
-        <div class="jackpot-source" id="jackpot-source">👑 Sultan Ahmad · Tier: Sultan Platinum</div>
-        <button class="withdraw-btn" onclick="showToast('Withdrawn to ShopeePay!')">💰 Withdraw to Wallet</button>
+        <div class="jackpot-label" id="jackpot-bonus">Exclusive reward for you!</div>
+        <div class="jackpot-source" id="jackpot-source">👑 Sultan Ahmad · Sultan</div>
+        <button class="withdraw-btn" id="withdraw-btn" onclick="showToast('Withdrawn to ShopeePay!')">💰 Withdraw to Wallet</button>
         <button class="recv-done-btn" onclick="resetToHome()">Done</button>
       </div>
     </div>
@@ -345,7 +357,7 @@
 </div>
 <div class="kbd-hint">Press <strong style="color:#555">D</strong> for debug</div>
 
-<script src="js/config.js?v=7"></script>
-<script src="js/app.js?v=7"></script>
+<script src="js/config.js?v=8"></script>
+<script src="js/app.js?v=8"></script>
 </body>
 </html>

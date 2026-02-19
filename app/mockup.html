@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockup v2 — Uniform Tiers + Receiver per Sender Tier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #EE4D2D;
+      --gold: #FCD34D;
+      --gold-gradient: linear-gradient(135deg, #FCD34D 0%, #B45309 50%, #FCD34D 100%);
+      --dark-bg: linear-gradient(180deg, #0a0a1a 0%, #1A1A1A 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Open Sans', sans-serif; background: #111; color: #fff; padding: 20px; }
+    h1 { font-size: 20px; color: var(--gold); margin-bottom: 8px; letter-spacing: 1px; }
+    h2 { font-size: 14px; color: #888; margin-bottom: 20px; font-weight: 400; }
+    h3 { font-size: 16px; color: var(--gold); margin: 40px 0 16px; letter-spacing: 1px; }
+    .note { font-size: 11px; color: #666; margin-bottom: 16px; line-height: 1.5; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+    .phone-wrap { position: relative; margin-top: 30px; }
+    .tier-label {
+      position: absolute; top: -24px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 800; white-space: nowrap; letter-spacing: 1px;
+    }
+    .section-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.06); margin: 40px 0; }
+
+    /* ===== MINI PHONE ===== */
+    .mini-phone {
+      width: 280px; height: 520px; border-radius: 28px; overflow: hidden;
+      position: relative; flex-shrink: 0; display: flex; flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    /* Status bar */
+    .sb { display: flex; justify-content: space-between; padding: 10px 20px 6px; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+    .sb-light { background: var(--orange); color: #fff; }
+    .sb-dark { background: transparent; color: var(--gold); }
+
+    /* Top nav */
+    .tn { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 6px; font-size: 12px; font-weight: 800; }
+    .tn-light { background: var(--orange); color: rgba(255,255,255,0.85); }
+    .tn-dark { background: transparent; color: rgba(252,211,77,0.7); }
+
+    .scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
+
+    /* Header — UNIFORM: title + month + intro only, NO score in header */
+    .hdr { text-align: center; padding: 8px 16px 8px; }
+    .hdr-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .hdr-title-vip {
+      font-size: 12px; background: var(--gold-gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px;
+    }
+    .hdr-month { font-size: 10px; margin-top: 2px; }
+    .hdr-intro { font-size: 9px; color: #888; margin-top: 4px; line-height: 1.4; }
+
+    /* Score section — UNIFORM for all tiers, with ⓘ inside */
+    .score-section { margin: 0 16px 6px; padding: 10px 12px; border-radius: 12px; }
+    .score-section-light { background: #fff5f2; border: 1px solid rgba(238,77,45,0.1); }
+    .score-section-dark { background: rgba(252,211,77,0.04); border: 1px solid rgba(252,211,77,0.08); }
+    .score-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .score-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .score-label-light { color: #999; }
+    .score-label-dark { color: #888; }
+    .score-value { font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+    .score-info {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; font-size: 9px; cursor: pointer;
+      opacity: 0.5; border-radius: 50%;
+    }
+    .score-info:hover { opacity: 1; }
+    .score-bar-bg { height: 6px; border-radius: 3px; width: 100%; overflow: hidden; }
+    .score-bar-bg-light { background: #eee; }
+    .score-bar-bg-dark { background: rgba(255,255,255,0.06); }
+    .score-bar-fill { height: 100%; border-radius: 3px; }
+    .score-tip { font-size: 9px; margin-top: 6px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .score-tip-light { color: var(--orange); }
+    .score-tip-dark { color: var(--gold); }
+
+    /* Balance card */
+    .bal { margin: 0 16px; border-radius: 12px; padding: 14px; text-align: center; }
+    .bal-light { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .bal-dark { background: linear-gradient(135deg, rgba(252,211,77,0.08), rgba(180,83,9,0.08)); border: 1px solid rgba(252,211,77,0.15); }
+    .bal-label { font-size: 8px; color: #999; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
+    .bal-amount { font-size: 24px; font-weight: 800; }
+    .bal-amount-orange { color: var(--orange); }
+    .bal-amount-gold { background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .bal-amount span { font-size: 14px; }
+    .bal-packets { font-size: 9px; color: #aaa; margin-top: 2px; }
+    .bal-stats { display: flex; justify-content: center; gap: 12px; margin-top: 4px; }
+    .bal-stat { text-align: center; }
+    .bal-stat-val { font-size: 11px; font-weight: 800; color: var(--gold); }
+    .bal-stat-lbl { font-size: 7px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Packet area */
+    .pkt { margin: 8px 16px 0; border-radius: 14px; padding: 12px; text-align: center; min-height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .pkt-light { background: #fff5f2; border: 1.5px dashed rgba(238,77,45,0.2); }
+    .pkt-dark { background: rgba(252,211,77,0.03); border: 1.5px dashed rgba(252,211,77,0.15); }
+    .pkt-env { width: 56px; height: 70px; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .pkt-env::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 45%; border-radius: 8px 8px 50% 50%; }
+    .pkt-seal { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 2; position: relative; }
+    .pkt-hint { font-size: 9px; font-weight: 700; margin-top: 6px; }
+    .pkt-sub { font-size: 8px; color: #bbb; margin-top: 2px; }
+    .pkt-silver { background: linear-gradient(180deg, #CBD5E0, #A0AEC0); box-shadow: 0 4px 12px rgba(160,174,192,0.3); }
+    .pkt-silver::before { background: linear-gradient(180deg, #E2E8F0, #CBD5E0); }
+    .pkt-silver .pkt-seal { background: #E2E8F0; color: #71717a; font-weight: 700; font-size: 10px; }
+    .pkt-gold { background: linear-gradient(180deg, #68D391, #38A169); box-shadow: 0 4px 12px rgba(72,187,120,0.3); }
+    .pkt-gold::before { background: linear-gradient(180deg, #9AE6B4, #68D391); }
+    .pkt-gold .pkt-seal { background: #FCD34D; }
+    .pkt-platinum { background: linear-gradient(180deg, #63B3ED, #3182CE); box-shadow: 0 4px 12px rgba(66,153,225,0.3); }
+    .pkt-platinum::before { background: linear-gradient(180deg, #90CDF4, #63B3ED); }
+    .pkt-platinum .pkt-seal { background: linear-gradient(135deg, #dbeafe, #60a5fa); }
+    .pkt-diamond { background: linear-gradient(180deg, #B794F4, #805AD5); box-shadow: 0 4px 12px rgba(159,122,234,0.3); }
+    .pkt-diamond::before { background: linear-gradient(180deg, #D6BCFA, #B794F4); }
+    .pkt-diamond .pkt-seal { background: linear-gradient(135deg, #e9d5ff, #a855f7); }
+    .pkt-sultan { background: linear-gradient(180deg, #1a1a2e, #0a0a1a); box-shadow: 0 4px 16px rgba(252,211,77,0.25), inset 0 0 0 1.5px rgba(252,211,77,0.3); }
+    .pkt-sultan::before { background: linear-gradient(180deg, #2a2a3e, #1a1a2e); border-bottom: 1.5px solid rgba(252,211,77,0.2); }
+    .pkt-sultan .pkt-seal { background: var(--gold-gradient); box-shadow: 0 2px 8px rgba(252,211,77,0.4); }
+
+    /* Bottom nav */
+    .bnav { display: flex; justify-content: space-around; padding: 6px 0 18px; flex-shrink: 0; }
+    .bnav-light { background: #fff; border-top: 1px solid #eee; }
+    .bnav-dark { background: rgba(10,10,26,0.98); border-top: 1px solid rgba(252,211,77,0.1); }
+    .bnav-item { text-align: center; font-size: 8px; font-weight: 700; flex: 1; }
+    .bnav-icon { font-size: 16px; display: block; margin-bottom: 1px; }
+
+    /* ===== RECEIVER ===== */
+    .recv-phone {
+      width: 300px; height: 560px; border-radius: 32px; overflow: hidden;
+      position: relative; flex-shrink: 0;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .recv-bg { position: absolute; inset: 0; }
+    .recv-overlay-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.55); z-index: 1; }
+    .recv-confetti { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+    .recv-confetti span { position: absolute; font-size: 14px; top: -20px; opacity: 0.4; animation: cfall 3s ease-in infinite; }
+    .recv-confetti span:nth-child(1) { left: 8%; } .recv-confetti span:nth-child(2) { left: 22%; animation-delay: 0.4s; font-size: 10px; }
+    .recv-confetti span:nth-child(3) { left: 42%; animation-delay: 0.7s; } .recv-confetti span:nth-child(4) { left: 62%; animation-delay: 0.2s; font-size: 12px; }
+    .recv-confetti span:nth-child(5) { left: 78%; animation-delay: 0.9s; } .recv-confetti span:nth-child(6) { left: 90%; animation-delay: 1.2s; font-size: 10px; }
+    @keyframes cfall { 0% { transform: translateY(0) rotate(0deg); opacity: 0.5; } 100% { transform: translateY(560px) rotate(360deg); opacity: 0; } }
+    .recv-content {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px;
+    }
+    .recv-card {
+      backdrop-filter: blur(24px); border-radius: 24px;
+      padding: 28px 20px 20px; text-align: center; width: 100%; max-width: 270px;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    }
+    .recv-celebration { font-size: 32px; margin-bottom: 6px; }
+    .recv-badge {
+      display: inline-block; padding: 5px 14px; border-radius: 100px;
+      font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      color: #fff; margin-bottom: 14px;
+    }
+    .recv-amount { font-size: 42px; font-weight: 800; line-height: 1; }
+    .recv-amount span { font-size: 18px; }
+    .recv-subtitle { font-size: 11px; margin-top: 6px; }
+    .recv-source {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 100px; padding: 5px 14px; margin-top: 12px;
+      font-size: 10px; font-weight: 600;
+    }
+    .recv-withdraw {
+      display: block; width: 100%; margin-top: 18px; padding: 13px;
+      color: #000; border: none; border-radius: 12px;
+      font-size: 13px; font-weight: 800; font-family: inherit; cursor: pointer;
+    }
+    .recv-done {
+      margin-top: 10px; padding: 8px 20px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; font-size: 11px; font-weight: 600; font-family: inherit; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>MOCKUP v2</h1>
+<h2>Uniform layout for all tiers + Receiver with sender tier color schemes</h2>
+
+<!-- ===== SENDER TIERS ===== -->
+<h3>SENDER DASHBOARDS — All 5 Tiers (Uniform Layout)</h3>
+<p class="note">All tiers now share the same structure: Title → Score Section (with ⓘ + bar + tip) → Balance → Packet.<br>No score text under title for VIP. ⓘ moved into score section for all tiers.</p>
+
+<div class="row">
+
+  <!-- SILVER -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#A0AEC0;">SILVER — Teman</div>
+    <div class="mini-phone" style="background:#fff;">
+      <div class="sb sb-light"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="tn tn-light"><span>‹</span><span>Shopee Sultan</span><span>⬆</span></div>
+      <div class="scroll">
+        <div class="hdr">
+          <div class="hdr-title" style="color:#1A1A1A;">🧧 Teman</div>
+          <div class="hdr-month" style="color:var(--orange);">Feb 2026</div>
+          <div class="hdr-intro">Send red packets to friends and earn rewards!</div>
+        </div>
+        <div class="score-section score-section-light">
+          <div class="score-top">
+            <span class="score-label score-label-light">Your Score</span>
+            <span class="score-value" style="color:#A0AEC0;">10 / 100 <span class="score-info">ⓘ</span></span>
+          </div>
+          <div class="score-bar-bg score-bar-bg-light"><div class="score-bar-fill" style="width:10%;background:#A0AEC0;"></div></div>
+          <div class="score-tip score-tip-light">💡 Spend Rp 500K/mo to reach Sahabat</div>
+        </div>
+        <div class="bal bal-light" style="margin-top:8px;">
+          <div class="bal-label">Your Treat Balance</div>
+          <div class="bal-amount bal-amount-orange"><span>Rp</span> 50.000</div>
+          <div class="bal-packets">5 packets remaining</div>
+        </div>
+        <div class="pkt pkt-light" style="margin-top:8px;">
+          <div class="pkt-env pkt-silver"><div class="pkt-seal">S</div></div>
+          <div class="pkt-hint" style="color:var(--orange);">Swipe packet up to send!</div>
+          <div class="pkt-sub">5 packets · Swipe to gift</div>
+        </div>
+      </div>
+      <div class="bnav bnav-light">
+        <div class="bnav-item" style="color:var(--orange);"><span class="bnav-icon">🎁</span>Send</div>
+        <div class="bnav-item" style="color:#ccc;"><span class="bnav-icon">👤</span>Me</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOLD -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#48BB78;">GOLD — Sahabat</div>
+    <div class="mini-phone" style="background:#fff;">
+      <div class="sb sb-light"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="tn tn-light"><span>‹</span><span>Shopee Sultan</span><span>⬆</span></div>
+      <div class="scroll">
+        <div class="hdr">
+          <div class="hdr-title" style="color:#1A1A1A;">🧧 Sahabat</div>
+          <div class="hdr-month" style="color:var(--orange);">Feb 2026</div>
+          <div class="hdr-intro">Send red packets to friends and earn rewards!</div>
+        </div>
+        <div class="score-section score-section-light">
+          <div class="score-top">
+            <span class="score-label score-label-light">Your Score</span>
+            <span class="score-value" style="color:#48BB78;">28 / 100 <span class="score-info">ⓘ</span></span>
+          </div>
+          <div class="score-bar-bg score-bar-bg-light"><div class="score-bar-fill" style="width:28%;background:#48BB78;"></div></div>
+          <div class="score-tip score-tip-light">💡 Subscribe to VIP to reach Dermawan</div>
+        </div>
+        <div class="bal bal-light" style="margin-top:8px;">
+          <div class="bal-label">Your Treat Balance</div>
+          <div class="bal-amount bal-amount-orange"><span>Rp</span> 200.000</div>
+          <div class="bal-packets">15 packets remaining</div>
+        </div>
+        <div class="pkt pkt-light" style="margin-top:8px;">
+          <div class="pkt-env pkt-gold"><div class="pkt-seal">🌿</div></div>
+          <div class="pkt-hint" style="color:var(--orange);">Swipe packet up to send!</div>
+          <div class="pkt-sub">15 packets · Swipe to gift</div>
+        </div>
+      </div>
+      <div class="bnav bnav-light">
+        <div class="bnav-item" style="color:var(--orange);"><span class="bnav-icon">🎁</span>Send</div>
+        <div class="bnav-item" style="color:#ccc;"><span class="bnav-icon">👤</span>Me</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATINUM -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#4299E1;">PLATINUM — Dermawan</div>
+    <div class="mini-phone" style="background:linear-gradient(180deg, #0a0a1a, #1A1A1A);">
+      <div class="sb sb-dark"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="tn tn-dark"><span>‹</span><span>Shopee Sultan</span><span>⬆</span></div>
+      <div class="scroll">
+        <div class="hdr">
+          <div class="hdr-title hdr-title-vip">Dermawan Privilege</div>
+          <div class="hdr-month" style="color:#666;">Feb 2026</div>
+          <div class="hdr-intro" style="color:#555;">Share your generosity. Send exclusive gifts!</div>
+        </div>
+        <div class="score-section score-section-dark">
+          <div class="score-top">
+            <span class="score-label score-label-dark">Your Score</span>
+            <span class="score-value" style="color:#4299E1;">52 / 100 <span class="score-info" style="color:var(--gold);">ⓘ</span></span>
+          </div>
+          <div class="score-bar-bg score-bar-bg-dark"><div class="score-bar-fill" style="width:52%;background:#4299E1;"></div></div>
+          <div class="score-tip score-tip-dark">💡 Spend Rp 3M more to reach Juragan</div>
+        </div>
+        <div class="bal bal-dark" style="margin-top:8px;">
+          <div class="bal-label">Dermawan Treasury</div>
+          <div class="bal-amount bal-amount-gold"><span>Rp</span> 750.000</div>
+          <div class="bal-stats">
+            <div class="bal-stat"><div class="bal-stat-val">30</div><div class="bal-stat-lbl">Packets</div></div>
+            <div class="bal-stat"><div class="bal-stat-val">24</div><div class="bal-stat-lbl">Gifted</div></div>
+            <div class="bal-stat"><div class="bal-stat-val">#5</div><div class="bal-stat-lbl">Rank</div></div>
+          </div>
+        </div>
+        <div class="pkt pkt-dark" style="margin-top:8px;">
+          <div class="pkt-env pkt-platinum"><div class="pkt-seal">❄️</div></div>
+          <div class="pkt-hint" style="color:var(--gold);">Swipe Up to Make it Rain</div>
+          <div class="pkt-sub">30 packets · Swipe to gift</div>
+        </div>
+      </div>
+      <div class="bnav bnav-dark">
+        <div class="bnav-item" style="color:var(--gold);"><span class="bnav-icon">🎁</span>Send</div>
+        <div class="bnav-item" style="color:#555;"><span class="bnav-icon">👤</span>Me</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIAMOND -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#9F7AEA;">DIAMOND — Juragan</div>
+    <div class="mini-phone" style="background:linear-gradient(180deg, #0a0a1a, #1A1A1A);">
+      <div class="sb sb-dark"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="tn tn-dark"><span>‹</span><span>Shopee Sultan</span><span>⬆</span></div>
+      <div class="scroll">
+        <div class="hdr">
+          <div class="hdr-title hdr-title-vip">Juragan Privilege</div>
+          <div class="hdr-month" style="color:#666;">Feb 2026</div>
+          <div class="hdr-intro" style="color:#555;">Share your generosity. Send exclusive gifts!</div>
+        </div>
+        <div class="score-section score-section-dark">
+          <div class="score-top">
+            <span class="score-label score-label-dark">Your Score</span>
+            <span class="score-value" style="color:#9F7AEA;">75 / 100 <span class="score-info" style="color:var(--gold);">ⓘ</span></span>
+          </div>
+          <div class="score-bar-bg score-bar-bg-dark"><div class="score-bar-fill" style="width:75%;background:#9F7AEA;"></div></div>
+          <div class="score-tip score-tip-dark">💡 Upgrade to VIP Platinum to reach Sultan</div>
+        </div>
+        <div class="bal bal-dark" style="margin-top:8px;">
+          <div class="bal-label">Juragan Treasury</div>
+          <div class="bal-amount bal-amount-gold"><span>Rp</span> 2.000.000</div>
+          <div class="bal-stats">
+            <div class="bal-stat"><div class="bal-stat-val">50</div><div class="bal-stat-lbl">Packets</div></div>
+            <div class="bal-stat"><div class="bal-stat-val">42</div><div class="bal-stat-lbl">Gifted</div></div>
+            <div class="bal-stat"><div class="bal-stat-val">#4</div><div class="bal-stat-lbl">Rank</div></div>
+          </div>
+        </div>
+        <div class="pkt pkt-dark" style="margin-top:8px;">
+          <div class="pkt-env pkt-diamond"><div class="pkt-seal">💎</div></div>
+          <div class="pkt-hint" style="color:var(--gold);">Swipe Up to Make it Rain</div>
+          <div class="pkt-sub">50 packets · Swipe to gift</div>
+        </div>
+      </div>
+      <div class="bnav bnav-dark">
+        <div class="bnav-item" style="color:var(--gold);"><span class="bnav-icon">🎁</span>Send</div>
+        <div class="bnav-item" style="color:#555;"><span class="bnav-icon">👤</span>Me</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SULTAN -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#FCD34D;">SULTAN</div>
+    <div class="mini-phone" style="background:linear-gradient(180deg, #0a0a1a, #1A1A1A);">
+      <div class="sb sb-dark"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="tn tn-dark"><span>‹</span><span>Shopee Sultan</span><span>⬆</span></div>
+      <div class="scroll">
+        <div class="hdr">
+          <div class="hdr-title hdr-title-vip">Sultan Privilege</div>
+          <div class="hdr-month" style="color:#666;">Feb 2026</div>
+          <div class="hdr-intro" style="color:#555;">Share your generosity. Send exclusive gifts!</div>
+        </div>
+        <div class="score-section score-section-dark">
+          <div class="score-top">
+            <span class="score-label score-label-dark">Your Score</span>
+            <span class="score-value" style="color:#FCD34D;">98 / 100 <span class="score-info" style="color:var(--gold);">ⓘ</span></span>
+          </div>
+          <div class="score-bar-bg score-bar-bg-dark"><div class="score-bar-fill" style="width:98%;background:var(--gold-gradient);"></div></div>
+          <div class="score-tip score-tip-dark">👑 You're at the top!</div>
+        </div>
+        <div class="bal bal-dark" style="margin-top:8px;">
+          <div class="bal-label">Sultan Treasury</div>
+          <div class="bal-amount bal-amount-gold"><span>Rp</span> 5.000.000</div>
+          <div class="bal-stats">
+            <div class="bal-stat"><div class="bal-stat-val">100</div><div class="bal-stat-lbl">Packets</div></div>
+            <div class="bal-stat"><div class="bal-stat-val">87</div><div class="bal-stat-lbl">Gifted</div></div>
+            <div class="bal-stat"><div class="bal-stat-val">#3</div><div class="bal-stat-lbl">Rank</div></div>
+          </div>
+        </div>
+        <div class="pkt pkt-dark" style="margin-top:8px;">
+          <div class="pkt-env pkt-sultan"><div class="pkt-seal">👑</div></div>
+          <div class="pkt-hint" style="color:var(--gold);">Swipe Up to Make it Rain</div>
+          <div class="pkt-sub">100 packets · Swipe to gift</div>
+        </div>
+      </div>
+      <div class="bnav bnav-dark">
+        <div class="bnav-item" style="color:var(--gold);"><span class="bnav-icon">🎁</span>Send</div>
+        <div class="bnav-item" style="color:#555;"><span class="bnav-icon">👤</span>Me</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ===== RECEIVER — DIFFERENT SENDER TIERS ===== -->
+<h3>RECEIVER OPENED — By Sender Tier (Color Scheme)</h3>
+<p class="note">Each receiver view adapts to the sender's tier color. Card border, source pill, amount glow, and withdraw button all reflect the sender's identity.</p>
+
+<div class="row">
+
+  <!-- From TEMAN (Silver) sender -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#A0AEC0;">From: Teman (Silver)</div>
+    <div class="recv-phone">
+      <div class="recv-bg" style="background:linear-gradient(180deg, #cc3300, #EE4D2D 50%, #cc3300);"></div>
+      <div class="recv-overlay-bg"></div>
+      <div class="recv-confetti"><span>🪙</span><span>✨</span><span>🪙</span><span>⭐</span><span>🪙</span><span>✨</span></div>
+      <div class="recv-content">
+        <div class="recv-card" style="background:rgba(15,15,30,0.85); border:1px solid rgba(160,174,192,0.2);">
+          <div class="recv-celebration">🧧</div>
+          <div class="recv-badge" style="background:linear-gradient(135deg, #EE4D2D, #cc3300);">🧧 Friend's Treat</div>
+          <div class="recv-amount" style="background:linear-gradient(135deg,#fff,#CBD5E0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 12px rgba(160,174,192,0.3));"><span>Rp</span> 150</div>
+          <div class="recv-subtitle" style="color:#888;">Standard gift reward</div>
+          <div class="recv-source" style="background:rgba(160,174,192,0.1);border:1px solid rgba(160,174,192,0.2);color:#A0AEC0;">S Rina Sari · Teman</div>
+          <button class="recv-withdraw" style="background:linear-gradient(135deg,#CBD5E0,#A0AEC0);color:#333;box-shadow:0 6px 20px rgba(160,174,192,0.25);">💰 Withdraw to Wallet</button>
+          <button class="recv-done" style="color:#999;">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- From SAHABAT (Gold) sender -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#48BB78;">From: Sahabat (Gold)</div>
+    <div class="recv-phone">
+      <div class="recv-bg" style="background:linear-gradient(180deg, #1a5e2e, #38A169 50%, #1a5e2e);"></div>
+      <div class="recv-overlay-bg"></div>
+      <div class="recv-confetti"><span>🪙</span><span>✨</span><span>🪙</span><span>⭐</span><span>🪙</span><span>✨</span></div>
+      <div class="recv-content">
+        <div class="recv-card" style="background:rgba(10,20,10,0.85); border:1px solid rgba(72,187,120,0.2);">
+          <div class="recv-celebration">🎉</div>
+          <div class="recv-badge" style="background:linear-gradient(135deg, #4ecdc4, #44a08d);">🎉 Welcome Back Gift</div>
+          <div class="recv-amount" style="background:linear-gradient(135deg,#9AE6B4,#38A169);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 12px rgba(72,187,120,0.3));"><span>Rp</span> 2.000</div>
+          <div class="recv-subtitle" style="color:#7a9;">Exclusive reward for you!</div>
+          <div class="recv-source" style="background:rgba(72,187,120,0.1);border:1px solid rgba(72,187,120,0.2);color:#48BB78;">🌿 Budi Hartono · Sahabat</div>
+          <button class="recv-withdraw" style="background:linear-gradient(135deg,#68D391,#38A169);color:#000;box-shadow:0 6px 20px rgba(72,187,120,0.25);">💰 Withdraw to Wallet</button>
+          <button class="recv-done" style="color:#7a9;">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- From DERMAWAN (Platinum) sender -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#4299E1;">From: Dermawan (Platinum)</div>
+    <div class="recv-phone">
+      <div class="recv-bg" style="background:linear-gradient(180deg, #0a1a3a, #1e3a5f 50%, #0a1a3a);"></div>
+      <div class="recv-overlay-bg"></div>
+      <div class="recv-confetti"><span>🪙</span><span>✨</span><span>🪙</span><span>⭐</span><span>🪙</span><span>✨</span></div>
+      <div class="recv-content">
+        <div class="recv-card" style="background:rgba(10,15,40,0.85); border:1px solid rgba(66,153,225,0.2);">
+          <div class="recv-celebration">🎁</div>
+          <div class="recv-badge" style="background:linear-gradient(135deg, #8B5CF6, #6D28D9);">🎁 New User Bonus</div>
+          <div class="recv-amount" style="background:linear-gradient(135deg,#90CDF4,#3182CE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 12px rgba(66,153,225,0.3));"><span>Rp</span> 15.000</div>
+          <div class="recv-subtitle" style="color:#6899c8;">Exclusive reward for you!</div>
+          <div class="recv-source" style="background:rgba(66,153,225,0.1);border:1px solid rgba(66,153,225,0.2);color:#4299E1;">❄️ Mega Dewi · Dermawan</div>
+          <button class="recv-withdraw" style="background:linear-gradient(135deg,#63B3ED,#3182CE);color:#000;box-shadow:0 6px 20px rgba(66,153,225,0.25);">💰 Withdraw to Wallet</button>
+          <button class="recv-done" style="color:#6899c8;">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- From JURAGAN (Diamond) sender -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#9F7AEA;">From: Juragan (Diamond)</div>
+    <div class="recv-phone">
+      <div class="recv-bg" style="background:linear-gradient(180deg, #1a0a2e, #2e1065 50%, #1a0a2e);"></div>
+      <div class="recv-overlay-bg"></div>
+      <div class="recv-confetti"><span>🪙</span><span>✨</span><span>🪙</span><span>⭐</span><span>🪙</span><span>✨</span></div>
+      <div class="recv-content">
+        <div class="recv-card" style="background:rgba(20,10,40,0.85); border:1px solid rgba(159,122,234,0.2);">
+          <div class="recv-celebration">🎉</div>
+          <div class="recv-badge" style="background:linear-gradient(135deg, #4ecdc4, #44a08d);">🎉 Welcome Back Gift</div>
+          <div class="recv-amount" style="background:linear-gradient(135deg,#D6BCFA,#805AD5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 12px rgba(159,122,234,0.3));"><span>Rp</span> 10.000</div>
+          <div class="recv-subtitle" style="color:#a88fd4;">Exclusive reward for you!</div>
+          <div class="recv-source" style="background:rgba(159,122,234,0.1);border:1px solid rgba(159,122,234,0.2);color:#9F7AEA;">💎 Ahmad Fauzi · Juragan</div>
+          <button class="recv-withdraw" style="background:linear-gradient(135deg,#B794F4,#805AD5);color:#fff;box-shadow:0 6px 20px rgba(159,122,234,0.25);">💰 Withdraw to Wallet</button>
+          <button class="recv-done" style="color:#a88fd4;">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- From SULTAN sender -->
+  <div class="phone-wrap">
+    <div class="tier-label" style="color:#FCD34D;">From: Sultan</div>
+    <div class="recv-phone">
+      <div class="recv-bg" style="background:linear-gradient(180deg, #1a0505, #2d0a0a 50%, #1a0505);"></div>
+      <div class="recv-overlay-bg"></div>
+      <div class="recv-confetti"><span>🪙</span><span>✨</span><span>🪙</span><span>⭐</span><span>🪙</span><span>✨</span></div>
+      <div class="recv-content">
+        <div class="recv-card" style="background:rgba(10,10,30,0.85); border:1px solid rgba(252,211,77,0.15);">
+          <div class="recv-celebration">🎉</div>
+          <div class="recv-badge" style="background:linear-gradient(135deg, #4ecdc4, #44a08d);">🎉 Welcome Back Gift</div>
+          <div class="recv-amount" style="background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(252,211,77,0.3));"><span>Rp</span> 10.000</div>
+          <div class="recv-subtitle" style="color:#888;">Exclusive reward for you!</div>
+          <div class="recv-source" style="background:rgba(252,211,77,0.08);border:1px solid rgba(252,211,77,0.15);color:var(--gold);">👑 Sultan Ahmad · Sultan</div>
+          <button class="recv-withdraw" style="background:var(--gold-gradient);color:#000;box-shadow:0 6px 20px rgba(252,211,77,0.25);">💰 Withdraw to Wallet</button>
+          <button class="recv-done" style="color:#888;">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
