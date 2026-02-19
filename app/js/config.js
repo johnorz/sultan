@@ -19,7 +19,7 @@ const CONFIG = {
   tiers: {
     silver: {
       id: 'silver',
-      name: 'Silver Member',
+      name: 'Teman',
       color: '#A0AEC0',
       scoreRange: [0, 19],
       monthlySpendMin: 0,
@@ -42,13 +42,12 @@ const CONFIG = {
       maxF2fBroadcastsPerHour: 5,
       rewardMultiplier: 0.5,        // T5 (Bottom) from reward_config
       trafficShare: 0.10,
-      bonusCoinsPercent: 0,
       // Mock score components (out of their max)
       scoreComponents: { vip: 0, spend: 3, activity: 5, social: 2 },
     },
     gold: {
       id: 'gold',
-      name: 'Gold Member',
+      name: 'Sahabat',
       color: '#48BB78',
       scoreRange: [20, 39],
       monthlySpendMin: 500000,
@@ -71,12 +70,11 @@ const CONFIG = {
       maxF2fBroadcastsPerHour: 5,
       rewardMultiplier: 0.8,        // T4 (Low) from reward_config
       trafficShare: 0.15,
-      bonusCoinsPercent: 0,
       scoreComponents: { vip: 0, spend: 15, activity: 8, social: 5 },
     },
     platinum: {
       id: 'platinum',
-      name: 'Platinum Elite',
+      name: 'Dermawan',
       color: '#4299E1',
       scoreRange: [40, 59],
       monthlySpendMin: 2000000,
@@ -99,12 +97,11 @@ const CONFIG = {
       maxF2fBroadcastsPerHour: 5,
       rewardMultiplier: 1.0,        // T3 (Mid) from reward_config
       trafficShare: 0.20,
-      bonusCoinsPercent: 5,
       scoreComponents: { vip: 15, spend: 22, activity: 10, social: 5 },
     },
     diamond: {
       id: 'diamond',
-      name: 'Diamond VIP',
+      name: 'Juragan',
       color: '#9F7AEA',
       scoreRange: [60, 79],
       monthlySpendMin: 5000000,
@@ -127,12 +124,11 @@ const CONFIG = {
       maxF2fBroadcastsPerHour: 8,
       rewardMultiplier: 1.2,        // T2 (Top) from reward_config
       trafficShare: 0.23,
-      bonusCoinsPercent: 10,
       scoreComponents: { vip: 28, spend: 28, activity: 12, social: 7 },
     },
     sultan: {
       id: 'sultan',
-      name: 'Sultan Platinum',
+      name: 'Sultan',
       color: '#FCD34D',
       scoreRange: [80, 100],
       monthlySpendMin: 15000000,
@@ -155,7 +151,6 @@ const CONFIG = {
       maxF2fBroadcastsPerHour: 10,
       rewardMultiplier: 1.5,        // T1 (Sultan) from reward_config
       trafficShare: 0.32,
-      bonusCoinsPercent: 20,
       scoreComponents: { vip: 40, spend: 35, activity: 14, social: 9 },
     },
   },

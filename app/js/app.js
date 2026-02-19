@@ -67,19 +67,22 @@ function applyReceiverSegment() {
 
   badge.textContent = `${seg.badgeIcon} ${seg.badge}`;
   badge.style.background = `linear-gradient(135deg, ${seg.badgeColor}, ${seg.badgeColor}cc)`;
-  amount.textContent = c.format(seg.rewardAmount);
 
-  // Bonus coins from sender tier
-  const bonusCoins = Math.round(seg.rewardAmount * t.bonusCoinsPercent / 100);
-  bonus.textContent = bonusCoins > 0
-    ? `+ ${bonusCoins.toLocaleString()} Bonus Coins from Sultan`
-    : seg.isIncremental ? 'Exclusive reward for you!' : 'Standard gift reward';
-  source.textContent = `${t.packetSeal} Sultan Ahmad · Tier: ${t.name}`;
+  // Randomize existing_active reward between 50% and 200% of base
+  let displayAmount = seg.rewardAmount;
+  if (seg.id === 'existing_active') {
+    const factor = 0.5 + Math.random() * 1.5; // 0.5× to 2.0×
+    displayAmount = Math.round(seg.rewardAmount * factor);
+  }
+  amount.textContent = c.format(displayAmount);
+
+  bonus.textContent = seg.isIncremental ? 'Exclusive reward for you!' : 'Standard gift reward';
+  source.textContent = `${t.packetSeal} Sultan Ahmad · ${t.name}`;
 
   // Update receiver locked screen hint based on segment
   const tag = $('recv-extra-tag');
   if (tag && seg.isIncremental) {
-    tag.textContent = seg.id === 'new_user' ? '🎁 Special Welcome Gift' : '✨ Contains Extra Coins';
+    tag.textContent = seg.id === 'new_user' ? '🎁 Special Welcome Gift' : '✨ Extra Reward';
   }
 }
 
@@ -127,6 +130,34 @@ function calculateCumulativeMilestoneRewards(totalSends) {
     total += sr.applyTierMultiplier ? Math.round(reward * t.rewardMultiplier) : reward;
   }
   return total;
+}
+
+// ===== SCORE INFO TOOLTIP =====
+function toggleScoreTooltip(e) {
+  e.stopPropagation();
+  const existing = document.querySelector('.score-tooltip');
+  if (existing) { existing.remove(); return; }
+  const t = tierData();
+  const sc = t.scoreComponents;
+  const scoring = CONFIG.scoring;
+  const tooltip = document.createElement('div');
+  tooltip.className = 'score-tooltip';
+  tooltip.innerHTML = `
+    <div class="score-tt-title">Score Breakdown</div>
+    <div class="score-tt-row"><span>${scoring.vipMembership.label} (${Math.round(scoring.vipMembership.weight*100)}%)</span><strong>${sc.vip}/${scoring.vipMembership.maxPoints}</strong></div>
+    <div class="score-tt-row"><span>${scoring.monthlySpend.label} (${Math.round(scoring.monthlySpend.weight*100)}%)</span><strong>${sc.spend}/${scoring.monthlySpend.maxPoints}</strong></div>
+    <div class="score-tt-row"><span>${scoring.accountActivity.label} (${Math.round(scoring.accountActivity.weight*100)}%)</span><strong>${sc.activity}/${scoring.accountActivity.maxPoints}</strong></div>
+    <div class="score-tt-row"><span>${scoring.socialEngagement.label} (${Math.round(scoring.socialEngagement.weight*100)}%)</span><strong>${sc.social}/${scoring.socialEngagement.maxPoints}</strong></div>
+    <div class="score-tt-total"><span>Total</span><strong>${sc.vip + sc.spend + sc.activity + sc.social}/100</strong></div>
+  `;
+  e.currentTarget.closest('.sender-header, .balance-card').appendChild(tooltip);
+  // Auto-close on outside click
+  setTimeout(() => {
+    document.addEventListener('click', function closeTooltip() {
+      tooltip.remove();
+      document.removeEventListener('click', closeTooltip);
+    }, { once: true });
+  }, 10);
 }
 
 // ===== TOAST =====
@@ -334,7 +365,7 @@ function buildSharePacket() {
   mini.style.background = pktBg;
   mini.style.boxShadow = pktShadow;
   mini.innerHTML = `<div class="share-packet-seal" style="background:${sealBg}">${t.packetSeal}</div>`;
-  $('sharePacketLabel').textContent = `${formatCurrency(t.packetValue)} ready to send`;
+  $('sharePacketLabel').textContent = 'Your gift is ready to send';
   $('shareTitle').textContent = t.isVip ? 'Send your Sultan gift' : 'Send your gift';
 }
 
@@ -715,6 +746,11 @@ function applyTier() {
   const v = getTierVisuals(state.tier);
   const c = CONFIG.currency;
 
+  // --- Score subtitle (current month) ---
+  const now = new Date();
+  const monthStr = now.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+  const score = t.scoreRange[0] + Math.floor((t.scoreRange[1] - t.scoreRange[0]) * 0.9);
+
   // --- Normal sender dashboard ---
   $('sender-balance').textContent = c.format(t.giftBudget);
   $('sender-packets').textContent = `${t.maxPackets} packets remaining`;
@@ -722,18 +758,13 @@ function applyTier() {
   $('sender-tier-badge').style.color = v.badgeColor;
   $('sender-tier-dot').style.background = t.color;
 
-  const tierIds = Object.keys(CONFIG.tiers);
-  const idx = tierIds.indexOf(state.tier);
-  const upgradeText = idx < tierIds.length - 1
-    ? `${t.name} · Spend more to unlock ${CONFIG.tiers[tierIds[idx + 1]].name}`
-    : `${t.name} · Max tier reached`;
-  $('sender-tier-text').textContent = upgradeText;
+  $('sender-tier-text').textContent = `${t.name} · Score ${score}/100`;
 
-  $('sender-mascot').textContent = t.isVip ? t.packetSeal : '🎁';
+  $('sender-intro').textContent = 'Send red packets to friends and earn rewards for every successful referral!';
   $('sender-title').textContent = CONFIG.strings.senderNormal.headerTitle;
-  $('sender-tagline').textContent = CONFIG.strings.senderNormal.tagline;
+  $('sender-tagline').textContent = `${monthStr}`;
   $('sendHintNormal').textContent = CONFIG.strings.senderNormal.swipeHint;
-  $('sendSubNormal').textContent = `Each packet: ${formatCurrency(t.packetValue)}`;
+  $('sendSubNormal').textContent = `${t.maxPackets} packets · Swipe to gift`;
 
   $('packetWrapperNormal').className = v.tierClass;
   $('sealNormal').textContent = t.packetSeal;
@@ -742,11 +773,11 @@ function applyTier() {
   $('vip-balance').textContent = c.format(t.giftBudget);
   $('vip-packets-val').textContent = t.maxPackets;
   $('vip-title').textContent = `${t.name} Privilege`;
-  $('vip-tier-label').textContent = `Score ${t.scoreRange[0] + Math.floor((t.scoreRange[1] - t.scoreRange[0]) * 0.9)}/100 · Season 12`;
+  $('vip-tier-label').textContent = `Score ${score}/100 · ${monthStr}`;
   $('vip-bal-label').textContent = t.isVip ? CONFIG.strings.senderVip.balanceLabel : CONFIG.strings.senderNormal.balanceLabel;
-  $('vip-crown').textContent = t.packetSeal;
+  $('vip-intro').textContent = 'Share your generosity. Send exclusive gifts and earn milestone rewards.';
   $('vip-micro-packets').textContent = `${t.maxPackets} packets`;
-  $('vip-micro-each').textContent = `${formatCurrency(t.packetValue)} each`;
+  $('vip-micro-each').textContent = `Swipe to gift`;
   $('sendHintVip').textContent = t.isVip ? CONFIG.strings.senderVip.swipeHint : CONFIG.strings.senderNormal.swipeHint;
 
   $('packetWrapperVip').className = v.tierClass;

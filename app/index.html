@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Shopee Sultan — Interactive Prototype</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=7">
 </head>
 <body>
 
@@ -17,13 +17,14 @@
     <div class="status-bar sb-normal"><span>9:41</span><span>📶 🔋</span></div>
     <div class="top-nav tn-normal">
       <div class="tn-left" onclick="navigateBack()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+      <div class="tn-center">Shopee Sultan</div>
       <div class="tn-right" onclick="openShareSheet()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg></div>
     </div>
     <div class="scrollable-content">
       <div class="sender-header sh-normal">
-        <span class="sh-icon" id="sender-mascot">🎁</span>
         <h2 class="sh-title" id="sender-title">🧧 Shopee Traktir</h2>
-        <div class="sh-tagline" id="sender-tagline">Spread joy to your friends!</div>
+        <div class="sh-tagline" id="sender-tagline">Feb 2026</div>
+        <div class="sh-intro" id="sender-intro">Send red packets to friends and earn rewards for every successful referral!</div>
       </div>
       <div class="balance-card bc-normal">
         <div class="bal-label">Your Treat Balance</div>
@@ -31,7 +32,8 @@
         <div class="packets-left" id="sender-packets">15 packets remaining</div>
         <div class="tier-badge-inline" id="sender-tier-badge">
           <span id="sender-tier-dot" class="tier-dot"></span>
-          <span id="sender-tier-text">Gold Member</span>
+          <span id="sender-tier-text">Sahabat · Score 35/100</span>
+          <span class="score-info-icon" onclick="toggleScoreTooltip(event)">ⓘ</span>
         </div>
       </div>
       <div class="packet-send-area psa-normal" id="sendAreaNormal">
@@ -62,13 +64,14 @@
     <div class="status-bar sb-vip"><span>9:41</span><span>📶 🔋</span></div>
     <div class="top-nav tn-vip">
       <div class="tn-left" onclick="navigateBack()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+      <div class="tn-center">Shopee Sultan</div>
       <div class="tn-right" onclick="openShareSheet()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg></div>
     </div>
     <div class="scrollable-content">
       <div class="sender-header sh-vip">
-        <span class="sh-icon" id="vip-crown">👑</span>
-        <h2 class="sh-title sh-title-vip" id="vip-title">Sultan Platinum Privilege</h2>
-        <div class="sh-tagline sh-tagline-vip" id="vip-tier-label">Score 92/100 · Season 12</div>
+        <h2 class="sh-title sh-title-vip" id="vip-title">Sultan Privilege</h2>
+        <div class="sh-tagline sh-tagline-vip" id="vip-tier-label">Score 92/100 · Feb 2026 <span class="score-info-icon score-info-vip" onclick="toggleScoreTooltip(event)">ⓘ</span></div>
+        <div class="sh-intro sh-intro-vip" id="vip-intro">Share your generosity. Send exclusive gifts and earn milestone rewards.</div>
       </div>
       <div class="balance-card bc-vip">
         <div class="bal-label" id="vip-bal-label">Sultan Treasury</div>
@@ -87,8 +90,7 @@
         </div>
         <div class="swipe-arrow hint-gold">↑</div>
         <div class="packet-send-hint hint-gold" id="sendHintVip">Swipe Up to Make it Rain</div>
-        <div class="packet-send-sub" style="color:#555">Broadcast to nearby friends</div>
-        <div class="micro-copy-vip"><strong id="vip-micro-packets">100 packets</strong> left · <span id="vip-micro-each">Rp 50,000 each</span></div>
+        <div class="micro-copy-vip"><strong id="vip-micro-packets">100 packets</strong> left · <span id="vip-micro-each">Swipe to gift</span></div>
       </div>
       <div class="leaderboard-section lb-vip" id="leaderboard-vip">
         <div class="lb-title lb-title-gold">🏆 Leaderboard</div>
@@ -125,6 +127,7 @@
     <div class="status-bar sb-me"><span>9:41</span><span>📶 🔋</span></div>
     <div class="top-nav tn-me">
       <div class="tn-left" onclick="navigateBack()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+      <div class="tn-center">Shopee Sultan</div>
       <div class="tn-right"></div>
     </div>
     <div class="scrollable-content me-content">
@@ -300,10 +303,10 @@
   <div class="debug-section">
     <label>Tier</label>
     <div class="debug-btns">
-      <div class="debug-btn" data-tier="silver" onclick="setTier('silver')">🥈 Silver</div>
-      <div class="debug-btn" data-tier="gold" onclick="setTier('gold')">🥇 Gold</div>
-      <div class="debug-btn" data-tier="platinum" onclick="setTier('platinum')">💎 Platinum</div>
-      <div class="debug-btn" data-tier="diamond" onclick="setTier('diamond')">💠 Diamond</div>
+      <div class="debug-btn" data-tier="silver" onclick="setTier('silver')">🥈 Teman</div>
+      <div class="debug-btn" data-tier="gold" onclick="setTier('gold')">🥇 Sahabat</div>
+      <div class="debug-btn" data-tier="platinum" onclick="setTier('platinum')">💎 Dermawan</div>
+      <div class="debug-btn" data-tier="diamond" onclick="setTier('diamond')">💠 Juragan</div>
       <div class="debug-btn active" data-tier="sultan" onclick="setTier('sultan')">👑 Sultan</div>
     </div>
   </div>
@@ -342,7 +345,7 @@
 </div>
 <div class="kbd-hint">Press <strong style="color:#555">D</strong> for debug</div>
 
-<script src="js/config.js?v=6"></script>
-<script src="js/app.js?v=6"></script>
+<script src="js/config.js?v=7"></script>
+<script src="js/app.js?v=7"></script>
 </body>
 </html>
