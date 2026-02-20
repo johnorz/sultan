@@ -8,7 +8,7 @@ const CONFIG = {
   // ===== CURRENCY =====
   currency: {
     code: 'IDR',
-    symbol: 'Rp',
+    symbol: '<svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg>',
     locale: 'id-ID',
     format(amount) {
       return amount.toLocaleString(this.locale);
@@ -37,7 +37,6 @@ const CONFIG = {
       sendMethods: ['link', 'qr', 'nfc', 'radar'],
       canRadar: true,
       canNfc: true,
-      canLeaderboard: true,
       maxLinkSendsPerDay: 10,
       maxF2fBroadcastsPerHour: 5,
       rewardMultiplier: 0.5,        // T5 (Bottom) from reward_config
@@ -65,7 +64,7 @@ const CONFIG = {
       sendMethods: ['link', 'qr', 'nfc', 'radar'],
       canRadar: true,
       canNfc: true,
-      canLeaderboard: true,
+
       maxLinkSendsPerDay: 20,
       maxF2fBroadcastsPerHour: 5,
       rewardMultiplier: 0.8,        // T4 (Low) from reward_config
@@ -92,7 +91,7 @@ const CONFIG = {
       sendMethods: ['link', 'qr', 'nfc', 'radar'],
       canRadar: true,
       canNfc: true,
-      canLeaderboard: true,
+
       maxLinkSendsPerDay: 30,
       maxF2fBroadcastsPerHour: 5,
       rewardMultiplier: 1.0,        // T3 (Mid) from reward_config
@@ -119,7 +118,7 @@ const CONFIG = {
       sendMethods: ['link', 'qr', 'nfc', 'radar'],
       canRadar: true,
       canNfc: true,
-      canLeaderboard: true,
+
       maxLinkSendsPerDay: 40,
       maxF2fBroadcastsPerHour: 8,
       rewardMultiplier: 1.2,        // T2 (Top) from reward_config
@@ -146,7 +145,7 @@ const CONFIG = {
       sendMethods: ['link', 'qr', 'nfc', 'radar'],
       canRadar: true,
       canNfc: true,
-      canLeaderboard: true,
+
       maxLinkSendsPerDay: 50,
       maxF2fBroadcastsPerHour: 10,
       rewardMultiplier: 1.5,        // T1 (Sultan) from reward_config
@@ -244,7 +243,7 @@ const CONFIG = {
   // ===== OPERATIONAL COSTS (from reward_config.json) =====
   operationalCosts: {
     fixedOpsCost: 200000000,
-    description: 'Includes Leaderboard Prizes (iPhones/Gold) and Marketing Buzz seeding',
+    description: 'Includes Marketing Buzz seeding and operational costs',
   },
 
   // ===== LEGACY RECEIVER CONFIG (kept for reference) =====
@@ -284,12 +283,12 @@ const CONFIG = {
     senderNormal: {
       headerTitle: '🧧 Shopee Traktir',
       tagline: 'Spread joy to your friends!',
-      balanceLabel: 'Your Treat Balance',
+      balanceLabel: 'Your Coin Balance',
       swipeHint: 'Swipe packet up to send!',
       swipeFailHint: 'Swipe up harder!',
     },
     senderVip: {
-      balanceLabel: 'Sultan Treasury',
+      balanceLabel: 'Coin Treasury',
       swipeHint: 'Swipe Up to Make it Rain',
       broadcastSub: 'Broadcast to nearby friends',
     },
@@ -328,22 +327,22 @@ const CONFIG = {
     { id: 'airdrop', name: 'Mass Airdrop', icon: '📡', desc: 'Send to everyone nearby' },
   ],
 
-  // ===== LEADERBOARD MOCK DATA =====
-  leaderboard: [
-    { name: 'Sultan Ahmad', avatar: '👑', amountSent: 12500000 },
-    { name: 'Mega Dewi', avatar: '💎', amountSent: 8200000 },
-    { name: 'You', avatar: '🫵', amountSent: 0, isYou: true },  // amount set dynamically
-    { name: 'Rina Sari', avatar: '👩', amountSent: 3100000 },
-    { name: 'Budi Hartono', avatar: '👨', amountSent: 1800000 },
+  // ===== RECENT RECIPIENTS MOCK DATA =====
+  recipients: [
+    { name: 'Dewi Lestari',   avatar: '👩', time: '2m ago',  claimed: true  },
+    { name: 'Budi Santoso',   avatar: '👨', time: '15m ago', claimed: true  },
+    { name: 'Rina Kartika',   avatar: '👩', time: '1h ago',  claimed: true  },
+    { name: 'Ahmad Yusuf',    avatar: '👨', time: '3h ago',  claimed: false },
+    { name: 'Siti Nurhaliza', avatar: '👩', time: '5h ago',  claimed: true  },
   ],
 
   // ===== MOCK ME TAB DATA (per tier) =====
   meTab: {
-    silver:   { totalSent: 3,  totalReceived: 45000,   sendEarnings: 5000 },
-    gold:     { totalSent: 12, totalReceived: 180000,  sendEarnings: 20000 },
-    platinum: { totalSent: 24, totalReceived: 520000,  sendEarnings: 40000 },
-    diamond:  { totalSent: 42, totalReceived: 1200000, sendEarnings: 70000 },
-    sultan:   { totalSent: 87, totalReceived: 3500000, sendEarnings: 145000 },
+    silver:   { totalSent: 3,  totalReceived: 45000,   sendEarnings: 5000,   packetsClaimed: 2,  totalCoinsShared: 20000 },
+    gold:     { totalSent: 12, totalReceived: 180000,  sendEarnings: 20000,  packetsClaimed: 8,  totalCoinsShared: 100000 },
+    platinum: { totalSent: 24, totalReceived: 520000,  sendEarnings: 40000,  packetsClaimed: 18, totalCoinsShared: 450000 },
+    diamond:  { totalSent: 42, totalReceived: 1200000, sendEarnings: 70000,  packetsClaimed: 35, totalCoinsShared: 1400000 },
+    sultan:   { totalSent: 87, totalReceived: 3500000, sendEarnings: 145000, packetsClaimed: 72, totalCoinsShared: 3600000 },
   },
 };
 

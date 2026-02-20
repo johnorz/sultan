@@ -1,8 +1,8 @@
 /**
- * Shopee Sultan — Interactive Prototype App (v3)
+ * Shopee Sultan — Interactive Prototype App (v4)
  * Supports: fade-in share overlay, packet fly animation (animates actual packet),
- * 2-tab nav (Send/Me), leaderboard, top nav bar, phone bump.
- * Score breakdown REMOVED per user request.
+ * 2-tab nav (Send/Me), recipients list, coins system, top nav bar, phone bump.
+ * Score breakdown in tooltip. Coins replace Rp. Claim flow on receiver.
  */
 
 // ===== APP STATE =====
@@ -23,6 +23,10 @@ function $$(sel) { return document.querySelectorAll(sel); }
 function tierData() { return CONFIG.tiers[state.tier]; }
 function formatCurrency(amount) {
   return `${CONFIG.currency.symbol} ${CONFIG.currency.format(amount)}`;
+}
+function coinIcon(size) {
+  const s = size || 14;
+  return `<svg class="sc-icon" viewBox="0 0 20 20" width="${s}" height="${s}"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg>`;
 }
 function hexToRgb(hex) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -66,7 +70,7 @@ function applyReceiverSegment() {
   const source = $('jackpot-source');
   const card = $('recvResultCard');
   const celebration = $('recv-result-celebration');
-  const withdrawBtn = $('withdraw-btn');
+  const claimBtn = $('claim-btn');
   if (!badge || !amount || !card) return;
 
   badge.textContent = `${seg.badgeIcon} ${seg.badge}`;
@@ -91,28 +95,24 @@ function applyReceiverSegment() {
   // Celebration emoji
   if (celebration) celebration.textContent = rv.celebration;
 
-  // Amount gradient
-  const amountParent = amount.parentElement;
-  amountParent.style.background = rv.amountGradient;
-  amountParent.style.webkitBackgroundClip = 'text';
-  amountParent.style.webkitTextFillColor = 'transparent';
-  amountParent.style.filter = `drop-shadow(${rv.amountShadow})`;
+  // Amount gradient — apply directly to the amount text
+  const amountEl = amount;
+  amountEl.style.background = rv.amountGradient;
+  amountEl.style.webkitBackgroundClip = 'text';
+  amountEl.style.webkitTextFillColor = 'transparent';
+  amountEl.style.filter = `drop-shadow(${rv.amountShadow})`;
 
   // Source pill
   source.style.background = rv.sourceBg;
   source.style.border = rv.sourceBorder;
   source.style.color = rv.sourceColor;
 
-  // Withdraw button
-  if (withdrawBtn) {
-    withdrawBtn.style.background = rv.withdrawBg;
-    withdrawBtn.style.color = rv.withdrawColor;
-    withdrawBtn.style.boxShadow = rv.withdrawShadow;
+  // Claim button (replaces withdraw)
+  if (claimBtn) {
+    claimBtn.style.background = rv.withdrawBg;
+    claimBtn.style.color = rv.withdrawColor;
+    claimBtn.style.boxShadow = rv.withdrawShadow;
   }
-
-  // Done button color
-  const doneBtn = card.querySelector('.recv-done-btn');
-  if (doneBtn) doneBtn.style.color = rv.doneColor;
 
   // Update receiver locked screen hint based on segment
   const tag = $('recv-extra-tag');
@@ -223,8 +223,8 @@ function applyScoreSection(variant, t, score) {
   barEl.style.width = `${score}%`;
   barEl.style.background = state.tier === 'sultan' ? 'var(--gold-gradient)' : t.color;
 
-  // Update tip
-  tipEl.textContent = getUpgradeTip(state.tier);
+  // Update tip (uses innerHTML because tips may contain SVG coin icons)
+  tipEl.innerHTML = getUpgradeTip(state.tier);
 
   // Update score value color
   if (variant === 'normal') {
@@ -319,7 +319,7 @@ function getReceiverTierVisuals(tierId) {
 // ===== TOAST =====
 function showToast(msg) {
   const toast = $('toast');
-  toast.textContent = msg;
+  toast.innerHTML = msg;
   toast.style.opacity = '1';
   toast.style.transform = 'translateX(-50%) translateY(0)';
   setTimeout(() => {
@@ -649,7 +649,7 @@ function resetReceiverState() {
   const pkt = display.querySelector('.recv-packet-big');
   if (pkt) { pkt.style.transform = ''; pkt.style.opacity = ''; pkt.style.filter = ''; }
   // Reset hidden elements
-  display.querySelectorAll('.recv-extra-tag, .recv-from, .recv-tier-badge, .recv-tap-hint').forEach(el => {
+  display.querySelectorAll('.recv-big-title, .recv-extra-tag, .recv-from, .recv-tier-badge, .recv-tap-hint').forEach(el => {
     el.style.opacity = '';
     el.style.transform = '';
   });
@@ -740,42 +740,57 @@ function populateShareScreen() {
   });
 }
 
-// ===== RENDER LEADERBOARD =====
-function renderLeaderboard() {
+// ===== RENDER RECIPIENTS =====
+function renderRecipients() {
   const t = tierData();
-  const youAmount = t.giftBudget * 0.6;
-
-  ['lb-list-normal', 'lb-list-vip'].forEach(listId => {
+  ['rcp-list-normal', 'rcp-list-vip'].forEach(listId => {
     const list = $(listId);
     if (!list) return;
     list.innerHTML = '';
-
-    const data = CONFIG.leaderboard.map(entry => {
-      if (entry.isYou) return { ...entry, amountSent: youAmount };
-      return { ...entry };
-    });
-    data.sort((a, b) => b.amountSent - a.amountSent);
-
-    data.forEach((entry, idx) => {
-      const rank = idx + 1;
+    CONFIG.recipients.forEach(r => {
       const item = document.createElement('div');
-      item.className = 'lb-item' + (entry.isYou ? ' is-you' : '');
-      let rankClass = 'lb-rank-default';
-      if (rank === 1) rankClass = 'lb-rank-1';
-      else if (rank === 2) rankClass = 'lb-rank-2';
-      else if (rank === 3) rankClass = 'lb-rank-3';
-      const nameHtml = entry.isYou
-        ? `${entry.name}<span class="lb-you-badge">YOU</span>`
-        : entry.name;
+      item.className = 'rcp-item';
+      const statusClass = r.claimed ? 'claimed' : 'pending';
+      const statusText = r.claimed ? 'Claimed' : 'Pending';
       item.innerHTML = `
-        <div class="lb-rank ${rankClass}">${rank}</div>
-        <div class="lb-avatar">${entry.avatar}</div>
-        <div class="lb-name">${nameHtml}</div>
-        <div class="lb-amount">${formatCurrency(entry.amountSent)}</div>
+        <div class="rcp-avatar">${r.avatar}</div>
+        <div class="rcp-info">
+          <div class="rcp-name">${r.name}</div>
+          <div class="rcp-time">${r.time}</div>
+        </div>
+        <div class="rcp-right">
+          <div class="rcp-amount">${formatCurrency(t.packetValue)}</div>
+          <div class="rcp-status ${statusClass}">${statusText}</div>
+        </div>
       `;
       list.appendChild(item);
     });
   });
+}
+
+// ===== CLAIM COINS (receiver → sender Me tab) =====
+function claimCoins() {
+  showToast(`${coinIcon(12)} Coins claimed!`);
+  setTimeout(() => {
+    resetReceiverState();
+    state.role = 'sender';
+    state.activeTab = 'me';
+    state.history = [];
+    // Hide all screens
+    $$('.screen').forEach(s => {
+      s.classList.remove('active', 'slide-left', 'slide-right');
+      s.classList.add('hidden');
+    });
+    // Show Me tab
+    const meEl = $('screen-me');
+    meEl.classList.remove('hidden');
+    meEl.classList.add('active');
+    state.screen = 'screen-me';
+    applyMeTab();
+    updateBottomNavHighlight();
+    // Update debug panel role buttons
+    $$('.debug-role-btn').forEach(b => b.classList.toggle('active', b.dataset.role === 'sender'));
+  }, 800);
 }
 
 // ===== POPULATE ME TAB =====
@@ -793,10 +808,10 @@ function applyMeTab() {
   const milestoneData = getMilestoneReward(effectiveSends);
   const cumulativeSendEarnings = milestoneData ? calculateCumulativeMilestoneRewards(effectiveSends) : 0;
   const totalEarnings = cumulativeSendEarnings + meData.totalReceived;
-  $('me-total-amount').textContent = formatCurrency(totalEarnings);
-  $('me-send-earnings').textContent = formatCurrency(cumulativeSendEarnings);
+  $('me-total-amount').innerHTML = formatCurrency(totalEarnings);
+  $('me-send-earnings').innerHTML = formatCurrency(cumulativeSendEarnings);
   $('me-total-sent').textContent = effectiveSends;
-  $('me-received').textContent = formatCurrency(meData.totalReceived);
+  $('me-received').innerHTML = formatCurrency(meData.totalReceived);
 
   // Style Me screen based on VIP
   const meScreen = $('screen-me');
@@ -880,14 +895,14 @@ function updateRadarCost() {
   const t = tierData();
   const total = count * t.packetValue;
   $('radar-count').textContent = `${count} of 5`;
-  $('radar-cost').textContent = formatCurrency(total);
+  $('radar-cost').innerHTML = formatCurrency(total);
 
   const accepted = Math.max(1, count - 1);
   const declined = count - accepted;
   const charged = accepted * t.packetValue;
   const returned = declined * t.packetValue;
   $('settlement-text').textContent = `${accepted} of ${count} accepted!`;
-  $('settlement-sub').textContent = `${formatCurrency(charged)} charged · ${formatCurrency(returned)} returned`;
+  $('settlement-sub').innerHTML = `${formatCurrency(charged)} charged · ${formatCurrency(returned)} returned`;
 }
 
 // ===== BROADCAST =====
@@ -908,8 +923,7 @@ function applyTier() {
   const score = t.scoreRange[0] + Math.floor((t.scoreRange[1] - t.scoreRange[0]) * 0.9);
 
   // --- Normal sender dashboard ---
-  $('sender-balance').textContent = c.format(t.giftBudget);
-  $('sender-packets').textContent = `${t.maxPackets} packets remaining`;
+  $('sender-balance').innerHTML = c.format(t.giftBudget);
 
   $('sender-intro').textContent = 'Send red packets to friends and earn rewards for every successful referral!';
   $('sender-title').textContent = `🧧 ${t.name}`;
@@ -923,9 +937,15 @@ function applyTier() {
   // --- Score section (normal) ---
   applyScoreSection('normal', t, score);
 
+  // --- 4-stat balance cards (normal) ---
+  const meData = CONFIG.meTab[state.tier];
+  $('normal-coins-shared').textContent = c.format(meData.totalCoinsShared);
+  $('normal-coins-remaining').textContent = c.format(t.giftBudget - meData.totalCoinsShared);
+  $('normal-packets-claimed').textContent = meData.packetsClaimed;
+  $('normal-packets-remaining').textContent = t.maxPackets;
+
   // --- VIP sender dashboard ---
-  $('vip-balance').textContent = c.format(t.giftBudget);
-  $('vip-packets-val').textContent = t.maxPackets;
+  $('vip-balance').innerHTML = c.format(t.giftBudget);
   $('vip-title').textContent = `${t.name} Privilege`;
   $('vip-tier-label').textContent = `${monthStr}`;
   $('vip-bal-label').textContent = t.isVip ? CONFIG.strings.senderVip.balanceLabel : CONFIG.strings.senderNormal.balanceLabel;
@@ -940,8 +960,11 @@ function applyTier() {
   $('packetWrapperVip').className = v.tierClass;
   $('sealVip').textContent = t.packetSeal;
 
-  const meData = CONFIG.meTab[state.tier];
-  $('vip-gifted-val').textContent = meData.totalSent;
+  // --- 4-stat balance cards (VIP) ---
+  $('vip-coins-shared').textContent = c.format(meData.totalCoinsShared);
+  $('vip-coins-remaining').textContent = c.format(t.giftBudget - meData.totalCoinsShared);
+  $('vip-packets-claimed').textContent = meData.packetsClaimed;
+  $('vip-packets-remaining').textContent = t.maxPackets;
 
   // --- Radar / Airdrop (tier-aware) ---
   $('screen-radar').setAttribute('data-radar-tier', state.tier);
@@ -954,8 +977,12 @@ function applyTier() {
   $('recv-extra-tag').style.background = v.tagBg;
   $('recv-extra-tag').style.color = v.tagColor;
   $('recv-extra-tag').textContent = v.tagText;
-  $('recv-from').style.color = v.fromColor;
-  $('recv-from').textContent = `${t.packetSeal} From: Sultan Ahmad`;
+  // Big title
+  const senderName = $('recv-sender-name');
+  if (senderName) {
+    senderName.textContent = 'Sultan Ahmad';
+    senderName.style.color = v.fromColor;
+  }
   $('recv-tier-badge').style.background = v.badgeBg;
   $('recv-tier-badge').style.color = v.badgeColor;
   $('recv-tier-badge').textContent = t.name;
@@ -971,7 +998,7 @@ function applyTier() {
   $$('.flying-packet .mini-seal').forEach(s => s.textContent = t.packetSeal);
 
   // Dynamic renders
-  renderLeaderboard();
+  renderRecipients();
   applyMeTab();
   updateRadarCost();
 }

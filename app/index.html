@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Shopee Sultan — Interactive Prototype</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/styles.css?v=10">
 </head>
 <body>
 
@@ -35,9 +35,14 @@
         <div class="score-tip score-tip-light" id="score-tip-normal">💡 Spend Rp 500K/mo to reach Sahabat</div>
       </div>
       <div class="balance-card bc-normal">
-        <div class="bal-label">Your Treat Balance</div>
-        <div class="bal-amount"><span>Rp</span> <span id="sender-balance">200,000</span></div>
-        <div class="packets-left" id="sender-packets">15 packets remaining</div>
+        <div class="bal-label">Your Coin Balance</div>
+        <div class="bal-amount"><svg class="sc-icon" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> <span id="sender-balance">200,000</span></div>
+        <div class="packets-info packets-info-4col">
+          <div class="stat"><div class="stat-val" id="normal-coins-shared">0</div><div class="stat-label">Shared</div></div>
+          <div class="stat"><div class="stat-val" id="normal-coins-remaining">0</div><div class="stat-label">Remaining</div></div>
+          <div class="stat"><div class="stat-val" id="normal-packets-claimed">0</div><div class="stat-label">Claimed</div></div>
+          <div class="stat"><div class="stat-val" id="normal-packets-remaining">0</div><div class="stat-label">Packets</div></div>
+        </div>
       </div>
       <div class="packet-send-area psa-normal" id="sendAreaNormal">
         <div id="packetWrapperNormal" class="tier-gold">
@@ -49,9 +54,9 @@
         <div class="packet-send-hint hint-orange" id="sendHintNormal">Swipe packet up to send!</div>
         <div class="packet-send-sub" id="sendSubNormal">Each packet: Rp 13,333</div>
       </div>
-      <div class="leaderboard-section lb-normal" id="leaderboard-normal">
-        <div class="lb-title">🏆 Leaderboard</div>
-        <div class="lb-list" id="lb-list-normal"></div>
+      <div class="recipients-section rcp-normal" id="recipients-normal">
+        <div class="rcp-title">📬 Recent Recipients</div>
+        <div class="rcp-list" id="rcp-list-normal"></div>
       </div>
     </div>
     <div class="bottom-nav bn-normal" id="bottom-nav-normal">
@@ -85,12 +90,13 @@
         <div class="score-tip score-tip-dark" id="score-tip-vip">👑 You're at the top!</div>
       </div>
       <div class="balance-card bc-vip">
-        <div class="bal-label" id="vip-bal-label">Sultan Treasury</div>
-        <div class="bal-amount"><span>Rp</span> <span id="vip-balance">5,000,000</span></div>
-        <div class="packets-info">
-          <div class="stat"><div class="stat-val" id="vip-packets-val">100</div><div class="stat-label">Packets Left</div></div>
-          <div class="stat"><div class="stat-val" id="vip-gifted-val">127</div><div class="stat-label">People Gifted</div></div>
-          <div class="stat"><div class="stat-val" id="vip-rank-val">#3</div><div class="stat-label">Leaderboard</div></div>
+        <div class="bal-label" id="vip-bal-label">Coin Treasury</div>
+        <div class="bal-amount"><svg class="sc-icon" viewBox="0 0 20 20" width="18" height="18"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> <span id="vip-balance">5,000,000</span></div>
+        <div class="packets-info packets-info-4col">
+          <div class="stat"><div class="stat-val" id="vip-coins-shared">0</div><div class="stat-label">Shared</div></div>
+          <div class="stat"><div class="stat-val" id="vip-coins-remaining">0</div><div class="stat-label">Remaining</div></div>
+          <div class="stat"><div class="stat-val" id="vip-packets-claimed">0</div><div class="stat-label">Claimed</div></div>
+          <div class="stat"><div class="stat-val" id="vip-packets-remaining">0</div><div class="stat-label">Packets</div></div>
         </div>
       </div>
       <div class="packet-send-area psa-vip" id="sendAreaVip">
@@ -103,9 +109,9 @@
         <div class="packet-send-hint hint-gold" id="sendHintVip">Swipe Up to Make it Rain</div>
         <div class="micro-copy-vip"><strong id="vip-micro-packets">100 packets</strong> left · <span id="vip-micro-each">Swipe to gift</span></div>
       </div>
-      <div class="leaderboard-section lb-vip" id="leaderboard-vip">
-        <div class="lb-title lb-title-gold">🏆 Leaderboard</div>
-        <div class="lb-list" id="lb-list-vip"></div>
+      <div class="recipients-section rcp-vip" id="recipients-vip">
+        <div class="rcp-title rcp-title-gold">📬 Recent Recipients</div>
+        <div class="rcp-list" id="rcp-list-vip"></div>
       </div>
     </div>
     <div class="bottom-nav bn-vip" id="bottom-nav-vip">
@@ -149,17 +155,17 @@
       </div>
       <div class="me-total-card" id="me-total-card">
         <div class="me-total-label">Total Earnings</div>
-        <div class="me-total-amount" id="me-total-amount">Rp 3,645,000</div>
+        <div class="me-total-amount" id="me-total-amount"><svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 3,645,000</div>
       </div>
       <div class="me-card">
         <div class="me-card-header">
           <span class="me-card-icon">🎁</span>
           <span class="me-card-title">Send Earnings</span>
         </div>
-        <div class="me-card-amount" id="me-send-earnings">Rp 145,000</div>
+        <div class="me-card-amount" id="me-send-earnings"><svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 145,000</div>
         <div class="me-card-detail"><span id="me-total-sent">87</span> packets sent</div>
         <div class="me-card-explainer">
-          <div class="me-explainer-row"><span>Every 3 successful sends</span><strong>+ Rp 5,000</strong></div>
+          <div class="me-explainer-row"><span>Every 3 successful sends</span><strong>+ <svg class="sc-icon" viewBox="0 0 20 20" width="11" height="11"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 5,000</strong></div>
           <div class="me-explainer-row me-explainer-bonus"><span>New user bonus (first 10 sends)</span><strong>2x reward</strong></div>
         </div>
       </div>
@@ -168,14 +174,14 @@
           <span class="me-card-icon">💰</span>
           <span class="me-card-title">Received from Others</span>
         </div>
-        <div class="me-card-amount" id="me-received">Rp 3,500,000</div>
+        <div class="me-card-amount" id="me-received"><svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 3,500,000</div>
         <div class="me-card-detail" id="me-received-detail">From gifts, airdrops & bonuses</div>
       </div>
       <div class="me-activity">
         <div class="me-activity-title">Recent Activity</div>
-        <div class="me-activity-item"><span>🎁</span><div><strong>Sent 3 packets</strong><br><small>Earned Rp 5,000</small></div><span class="me-time">2h ago</span></div>
-        <div class="me-activity-item"><span>💰</span><div><strong>Received from Sultan Ahmad</strong><br><small>Rp 50,000 + 10 bonus coins</small></div><span class="me-time">5h ago</span></div>
-        <div class="me-activity-item"><span>🎁</span><div><strong>Sent 3 packets</strong><br><small>Earned Rp 5,000 (new user 2x = Rp 10,000)</small></div><span class="me-time">1d ago</span></div>
+        <div class="me-activity-item"><span>🎁</span><div><strong>Sent 3 packets</strong><br><small>Earned <svg class="sc-icon" viewBox="0 0 20 20" width="11" height="11"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 5,000</small></div><span class="me-time">2h ago</span></div>
+        <div class="me-activity-item"><span>💰</span><div><strong>Received from Sultan Ahmad</strong><br><small><svg class="sc-icon" viewBox="0 0 20 20" width="11" height="11"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 50,000 + 10 bonus coins</small></div><span class="me-time">5h ago</span></div>
+        <div class="me-activity-item"><span>🎁</span><div><strong>Sent 3 packets</strong><br><small>Earned <svg class="sc-icon" viewBox="0 0 20 20" width="11" height="11"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 5,000 (new user 2x = <svg class="sc-icon" viewBox="0 0 20 20" width="11" height="11"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 10,000)</small></div><span class="me-time">1d ago</span></div>
       </div>
     </div>
     <div class="bottom-nav bn-me" id="bottom-nav-me">
@@ -230,7 +236,7 @@
     </div>
     <div class="rc-cost">
       <div class="cost-label">Maximum Budget Reserved</div>
-      <div class="cost-amount" id="radar-cost">Rp 150,000</div>
+      <div class="cost-amount" id="radar-cost"><svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 150,000</div>
       <div class="cost-note">✓ Only deducted when recipients accept</div>
     </div>
     <button class="broadcast-btn" onclick="startBroadcast()">📡 Start Airdrop</button>
@@ -253,7 +259,7 @@
   <div class="screen screen-settlement hidden" id="screen-settlement">
     <div class="settlement-check">✅</div>
     <div class="settlement-text" id="settlement-text">2 of 3 accepted!</div>
-    <div class="settlement-sub" id="settlement-sub">Rp 100,000 charged · Rp 50,000 returned</div>
+    <div class="settlement-sub" id="settlement-sub"><svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 100,000 charged · <svg class="sc-icon" viewBox="0 0 20 20" width="14" height="14"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 50,000 returned</div>
     <button class="settlement-done-btn" onclick="resetToHome()">Back to Dashboard</button>
   </div>
 
@@ -264,11 +270,12 @@
       <div class="particle"></div><div class="particle"></div>
     </div>
     <div class="recv-packet-display" id="recv-tap-area">
+      <div class="recv-big-title" id="recv-big-title">You received a packet<br>full of coins from<br><strong id="recv-sender-name">Sultan Ahmad</strong></div>
       <div class="recv-packet-big" id="recv-packet-big">
         <div class="recv-seal-big" id="recv-seal-big">👑</div>
       </div>
       <div class="recv-extra-tag" id="recv-extra-tag">✨ Contains Extra Coins</div>
-      <div class="recv-from" id="recv-from">👑 From: Sultan Ahmad</div>
+      <div class="recv-from" id="recv-from" style="display:none;">👑 From: Sultan Ahmad</div>
       <div class="recv-tier-badge" id="recv-tier-badge">Sultan Platinum</div>
       <div class="recv-tap-hint" id="recv-tap-hint">Tap to open Sultan's gift</div>
     </div>
@@ -286,11 +293,14 @@
       <div class="recv-result-card" id="recvResultCard">
         <div class="recv-result-celebration" id="recv-result-celebration">🎉</div>
         <div class="jackpot-badge" id="jackpot-badge">🎉 Welcome Back Gift</div>
-        <div class="jackpot-amount"><span>Rp</span> <span id="jackpot-amount">50,000</span></div>
+        <div class="jackpot-coins-hero">
+          <svg class="sc-icon sc-icon-big" viewBox="0 0 20 20" width="36" height="36"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg>
+          <span class="jackpot-amount-big" id="jackpot-amount">50,000</span>
+        </div>
+        <div class="jackpot-coins-label">coins</div>
         <div class="jackpot-label" id="jackpot-bonus">Exclusive reward for you!</div>
         <div class="jackpot-source" id="jackpot-source">👑 Sultan Ahmad · Sultan</div>
-        <button class="withdraw-btn" id="withdraw-btn" onclick="showToast('Withdrawn to ShopeePay!')">💰 Withdraw to Wallet</button>
-        <button class="recv-done-btn" onclick="resetToHome()">Done</button>
+        <button class="claim-btn" id="claim-btn" onclick="claimCoins()">Claim</button>
       </div>
     </div>
   </div>
@@ -334,7 +344,7 @@
   <div class="debug-section">
     <label>Sender Milestone</label>
     <div class="debug-milestone" id="debugMilestone">
-      <div class="debug-milestone-row">Sends: <strong id="dbg-sends">0</strong> · Next milestone: <strong id="dbg-next-milestone">3 sends → Rp 2,000</strong></div>
+      <div class="debug-milestone-row">Sends: <strong id="dbg-sends">0</strong> · Next milestone: <strong id="dbg-next-milestone">3 sends → <svg class="sc-icon" viewBox="0 0 20 20" width="11" height="11"><circle cx="10" cy="10" r="10" fill="#F9A825"/><circle cx="10" cy="10" r="8.5" fill="none" stroke="#F57F17" stroke-width="0.8" opacity="0.4"/><text x="10" y="14.5" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" font-family="Arial,sans-serif">S</text></svg> 2,000</strong></div>
     </div>
     <div class="debug-btns">
       <div class="debug-btn" onclick="debugSimulateSend()">📤 +1 Send</div>
@@ -357,7 +367,7 @@
 </div>
 <div class="kbd-hint">Press <strong style="color:#555">D</strong> for debug</div>
 
-<script src="js/config.js?v=8"></script>
-<script src="js/app.js?v=8"></script>
+<script src="js/config.js?v=10"></script>
+<script src="js/app.js?v=10"></script>
 </body>
 </html>
